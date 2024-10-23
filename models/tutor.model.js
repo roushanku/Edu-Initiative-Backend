@@ -1,28 +1,6 @@
 import mongoose from "mongoose";
 
-const teacherSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  phone: {
-    type: String,
-    required: true,
-    match: [/^\d{10}$/, "Please enter a valid phone number"]
-  },
-  email: {
-    type: String,
-    required: true,
-    match: [/.+@.+\..+/, "Please enter a valid email address"]
-  },
-  address: {
-    type: String,
-    required: true
-  },
-  whatsapp: {
-    type: String,
-    required: true
-  },
+const tutorSchema = new mongoose.Schema({
   qualifications: {
     type: [String],
     enum: ["10th", "12th", "B.Tech", "B.Ed"],
@@ -56,5 +34,5 @@ const teacherSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-const Teacher = mongoose.model("Teacher", teacherSchema);
-export default Teacher;
+const Tutor = mongoose.model("Teacher", tutorSchema);
+export default Tutor;

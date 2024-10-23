@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const verificationSchema = new mongoose.Schema({
-  teacher: {
+  tutor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Teacher",
+    ref: "Tutor",
     required: true
   },
   verified_by_admin: {

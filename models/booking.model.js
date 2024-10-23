@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
-
-
+import Student from "./student.model";
+import Tutor from "./tutor.model";
 const bookingSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
     required: true
   },
-  teacher: {
+  tutor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Teacher",
+    ref: "Tutor",
     required: true
   },
   status: {
