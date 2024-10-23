@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import Student from "./student.model";
-import Tutor from "./tutor.model";
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,6 +23,11 @@ const userSchema = new mongoose.Schema({
   pincode: {
     type: String,
     required: true,
+  },
+  role : {
+    type : String,
+    enum : ["student" , "tutor"],
+    required : true
   },
   student: {
     type : mongoose.Schema.Types.ObjectId,

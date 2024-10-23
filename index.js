@@ -5,12 +5,15 @@ import connectMongoDb from "./db/mongoose.js";
 import rootRouter from "./routes/index.js";
 
 const app = express();
+app.use(express.json());
 app.use("/api", rootRouter);
+
 
 // Connect to MongoDB
 connectMongoDb();
 
-app.use("/", (req, res) => {
+app.post("/", (req, res) => {
+  // console.log(req.body);
   res.json({
     status: true,
     message: "API is running",

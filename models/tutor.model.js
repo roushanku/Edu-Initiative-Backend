@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const tutorSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   qualifications: {
     type: [String],
     enum: ["10th", "12th", "B.Tech", "B.Ed"],

@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
-
 const studentSchema = new mongoose.Schema({
-  class: {
+  userId : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "User",
+    required : true
+  },
+  classes: {
     type: String,
     required: true
   },
@@ -26,7 +30,7 @@ const studentSchema = new mongoose.Schema({
     enum: ["Male", "Female", "No Preference"]
   },
   preferred_exp: {
-    type: Boolean,
+    type: Number,
     default: false
   },
   preferred_timing: {
