@@ -2,9 +2,10 @@ import express from "express";
 import logger from "./logger.js";
 import { PORT } from "./scerets.js";
 import connectMongoDb from "./db/mongoose.js";
-import rootRouter from "./routes/index.js";
+import rootRouter from "./routes/v1/index.js";
 
 const app = express();
+app.use(express.json());
 app.use("/api", rootRouter);
 
 // Connect to MongoDB
