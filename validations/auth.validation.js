@@ -3,8 +3,12 @@ import Joi from "joi";
 
 export const register = {
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
     name: Joi.string().required(),
+    phone: Joi.string()
+      .required()
+      .pattern(new RegExp(/^\d{10}$/)),
+    email: Joi.string().required().email(),
+    role: Joi.string().required().valid("Student", "Tutor"),
+    password: Joi.string().required().custom(password),
   }),
 };
