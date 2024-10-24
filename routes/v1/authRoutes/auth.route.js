@@ -6,10 +6,6 @@ import * as authController from "../../../controllers/v1/authController/auth.con
 const authRouter = express.Router();
 
 // Use POST instead of GET for registration
-authRouter.post(
-  "/register",
-  validate(authValidator.register),
-  authController.register
-);
-
+authRouter.post("/register",  validate(authValidator.register),  authController.register);
+authRouter.post("/login", validate(authValidator.login), authController.login);
 export default authRouter;

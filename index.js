@@ -8,8 +8,7 @@ const app = express();
 
 app.use((req, res, next) => {
   logger.info(
-    `Request: ${req.method} ${req.url} <-> ` +
-      `Body: ${JSON.stringify(req.body)}`
+    `Request: ${req.method} ${req.url}` 
   );
   next();
 });

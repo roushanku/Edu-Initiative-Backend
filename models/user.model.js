@@ -27,17 +27,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 8,
-    validate(value) {
-      if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-        throw new Error(
-          "Password must contain at least one letter and one number"
-        );
-      }
-      if (value.length < 8) {
-        throw new Error("Password must be at least 8 characters long");
-      }
-    },
+    minlength: 3,
     private: true, // used by the toJSON plugin
   },
 });
