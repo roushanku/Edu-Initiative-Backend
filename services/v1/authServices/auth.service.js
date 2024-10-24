@@ -1,15 +1,23 @@
 import User from "../../../models/user.model.js";
+<<<<<<< HEAD
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { JWT_SECRET } from "../../../scerets.js";
 import { JWT_EXPIRES_IN } from "../../../scerets.js";
 export const createUser = async (userData) => {
   if (await User.isEmailTaken(userData.email)) {
+=======
+import bcrypt from "bcryptjs";
+
+export const createUser = async (data) => {
+  if (await User.isEmailTaken(data.email)) {
+>>>>>>> 60b32d11a6ac343c5902d67d8e29c8e9252d4673
     return {
       status: false,
       message: "Email already taken",
     };
   }
+<<<<<<< HEAD
 
   const userPayload = {
     ...userData,
@@ -23,6 +31,14 @@ export const createUser = async (userData) => {
     phone: user.phone,
   };
   console.log(user.name);
+=======
+  const hashPassword = bcrypt.hashSync(data.password, 10);
+  const userPayload = {
+    ...data,
+    password: hashPassword,
+  };
+  const user = await User.create(userPayload);
+>>>>>>> 60b32d11a6ac343c5902d67d8e29c8e9252d4673
   return {
     status: true,
     message: "User registered successfully",

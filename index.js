@@ -10,6 +10,7 @@ app.use((req, res, next) => {
   logger.info(
     `Request: ${req.method} ${req.url}` 
   );
+  logger.info(`Request: ${req.method} ${req.url}`);
   next();
 });
 
