@@ -8,7 +8,7 @@ export const register = {
       .required()
       .pattern(new RegExp(/^\d{10}$/)),
     email: Joi.string().required().email(),
-    role: Joi.string().required().valid("Student", "Tutor"),
     password: Joi.string().required().custom(password),
+    role: Joi.string().required().valid("Student", "Tutor"),
   }),
 };
