@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -9,13 +14,11 @@ const studentSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
-      match: [/^\d{10}$/, "Please enter a valid phone number"],
     },
     email: {
       type: String,
       unique: true,
       required: true,
-      match: [/.+@.+\..+/, "Please enter a valid email address"],
     },
     password: {
       type: String,
@@ -28,12 +31,15 @@ const studentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+studentSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 };
 
-userSchema.statics.isPhoneNumberTaken = async function (phone, excludeUserId) {
+studentSchema.statics.isPhoneNumberTaken = async function (
+  phone,
+  excludeUserId
+) {
   const user = await this.findOne({ phone, _id: { $ne: excludeUserId } });
   return !!user;
 };
@@ -43,7 +49,7 @@ userSchema.statics.isPhoneNumberTaken = async function (phone, excludeUserId) {
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.methods.isPasswordMatch = async function (password) {
+studentSchema.methods.isPasswordMatch = async function (password) {
   const user = this;
   return bcrypt.compare(password, user.password);
 };

@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const tutorSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     name: {
       type: String,
       required: true,
@@ -9,7 +13,6 @@ const tutorSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      match: [/.+@.+\..+/, "Please enter a valid email address"],
     },
     password: {
       type: String,
@@ -18,7 +21,6 @@ const tutorSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
-      match: [/^\d{10}$/, "Please enter a valid phone number"],
     },
     aadharNumber: {
       type: String,
@@ -57,29 +59,33 @@ const tutorSchema = new mongoose.Schema(
     },
     timingPreferred: [
       {
-        startTime: {
-          type: String,
+        day: {
+          type: [String],
+          enum: [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY",
+          ],
           required: true,
         },
-        endTime: {
-          type: String,
-          required: true,
-        },
+        timings: [
+          {
+            startTime: {
+              type: String,
+              required: true,
+            },
+            endTime: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
       },
     ],
-    daysAvailable: {
-      type: [String],
-      enum: [
-        "MONDAY",
-        "TUESDAY",
-        "WEDNESDAY",
-        "THURSDAY",
-        "FRIDAY",
-        "SATURDAY",
-        "SUNDAY",
-      ],
-      required: true,
-    },
     address: {
       type: String,
       required: true,
