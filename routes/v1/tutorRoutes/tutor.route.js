@@ -5,7 +5,7 @@ import * as tutorController from "../../../controllers/v1/tutorController/tutor.
 
 const tutorRouter = express.Router();
 
-tutorRouter.get("/", tutorController.getTutors)
+tutorRouter.get("/", tutorController.getTutors);
 
 tutorRouter.post(
   "/application",
@@ -13,4 +13,9 @@ tutorRouter.post(
   tutorController.createTutorApplication
 );
 
+tutorRouter.post(
+  "/hire",
+  validate(tutorValidator.hireTutor),
+  tutorController.hireTutor
+);
 export default tutorRouter;

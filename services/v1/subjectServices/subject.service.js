@@ -1,5 +1,12 @@
 import Subject from "../../../models/subject.model.js";
 
+export const checkSubject = async (subjectId) => {
+  const subject = await Subject.findById(subjectId);
+  return subject
+    ? { status: true, subject }
+    : { status: false, message: "Subject not found" };
+};
+
 export const createSubject = async (subjectData) => {
   const subjectCode = subjectData.subjectCode;
   const checkSubject = await Subject.findOne({ subjectCode });
