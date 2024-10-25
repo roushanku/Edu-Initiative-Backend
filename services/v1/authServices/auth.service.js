@@ -89,7 +89,7 @@ const loginHandler = async (userId, password, Model) => {
       return { status: false, message: "Invalid password" };
     }
 
-    const token = generateToken(user._id, user.email);
+    const token = generateToken(user._id, user.email, userId);
     return {
       status: true,
       message: "Login Successful",
