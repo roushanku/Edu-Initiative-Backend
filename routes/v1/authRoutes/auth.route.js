@@ -7,14 +7,20 @@ const authRouter = express.Router();
 
 authRouter.post(
   "/register/student",
-  validate(authValidator.registerStudent),
+  validate(authValidator.studentSchemaValidation),
   authController.registerStudent
 );
 
 authRouter.post(
   "/register/tutor",
-  validate(authValidator.registerTutor),
+  validate(authValidator.tutorSchemaValidation),
   authController.registerTutor
+);
+
+authRouter.post(
+  "/register/user",
+  validate(authValidator.userSchemaValidation),
+  authController.registerUser
 );
 
 authRouter.post("/login", validate(authValidator.login), authController.login);

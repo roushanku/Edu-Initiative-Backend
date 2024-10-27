@@ -1,131 +1,56 @@
 import mongoose from "mongoose";
 
-const tutorSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+const tutorSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  education: [
+    {
+      degree: String,
+      institution: String,
+      graduationYear: Number,
+      documents: [String], // URLs to degree certificates
     },
-    name: {
-      type: String,
-      required: true,
+  ],
+  experience: [
+    {
+      institution: String,
+      position: String,
+      startDate: Date,
+      endDate: Date,
+      description: String,
     },
-    email: {
-      type: String,
-      required: true,
+  ],
+  subjects: [
+    {
+      name: String,
+      level: [String], // ['elementary', 'middle', 'high', 'college']
+      hourlyRate: Number,
     },
-    password: {
-      type: String,
-      required: true,
+  ],
+  availability: [
+    {
+      dayOfWeek: Number, // 0-6 (Sunday-Saturday)
+      startTime: String, // "HH:mm" format
+      endTime: String,
     },
-    phone: {
-      type: String,
-      required: true,
-    },
-    aadharNumber: {
-      type: String,
-      required: true,
-    },
-    whatsappNumber: {
-      type: String,
-      required: true,
-    },
-    qualifications: {
-      type: [String],
-      enum: ["10th", "12th", "B.Tech", "B.Ed", "M.TECH", "PHD"],
-      required: true,
-    },
-    experience: {
-      type: Number,
-      required: true,
-    },
-    subjects: [
-      {
-        subjectId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Subject",
-          required: true,
-        },
-        fee: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
-    expertise: {
-      type: [String],
-      enum: ["MATH", "SCIENCE", "ENGLISH", "SOCIAL_STUDIES"],
-      required: true,
-    },
-    timingPreferred: [
-      {
-        day: {
-          type: [String],
-          enum: [
-            "MONDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-            "THURSDAY",
-            "FRIDAY",
-            "SATURDAY",
-            "SUNDAY",
-          ],
-          required: true,
-        },
-        timings: [
-          {
-            startTime: {
-              type: String,
-              required: true,
-            },
-            endTime: {
-              type: String,
-              required: true,
-            },
-          },
-        ],
-      },
-    ],
-    address: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    pincode: {
-      type: Number,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
+  ],
+  ratings: {
+    averageRating: { type: Number, default: 0 },
+    totalRatings: { type: Number, default: 0 },
   },
-  { timestamps: true }
-);
-
-tutorSchema.statics.isEmailTaken = async function (email, excludeUserId) {
-  const tutor = await this.findOne({ email, _id: { $ne: excludeUserId } });
-  return !!tutor;
-};
-
-tutorSchema.statics.isPhoneNumberTaken = async function (phone, excludeUserId) {
-  const tutor = await this.findOne({ phone, _id: { $ne: excludeUserId } });
-  return !!tutor;
-};
-
-tutorSchema.statics.isAadharNumberTaken = async function (
-  aadharNumber,
-  excludeUserId
-) {
-  const tutor = await this.findOne({
-    aadharNumber,
-    _id: { $ne: excludeUserId },
-  });
-  return !!tutor;
-};
+  bio: String,
+  teachingMethodology: {
+    type: String,
+    enum: ["Online", "Offline"],
+    default: "Offline",
+    required: true,
+  },
+  medium: [String],
+  verificationStatus: {
+    type: String,
+    enum: ["Pending", "Verified", "Rejected"],
+    default: "Pending",
+  },
+});
 
 const Tutor = mongoose.model("Tutor", tutorSchema);
 export default Tutor;

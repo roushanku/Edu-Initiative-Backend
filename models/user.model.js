@@ -2,30 +2,23 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 const { Schema } = mongoose;
 
-const userSchema = new Schema(
-  {
-    idNumber: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    role: {
-      type: String,
-      enum: ["Admin", "Student", "Tutor"],
-      required: true,
-    },
+// User Schema - Updated
+const userSchema = {
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  phoneNumber: String,
+  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }], // Reference to Address schema
+  profilePicture: String,
+  role: {
+    type: String,
+    enum: ["Student", "Tutor", "Admin", "User"],
+    required: true,
   },
-  { timestamps: true }
-);
-
-/**
- * Check if password matches the user's password
- * @param {string} password
- * @returns {Promise<boolean>}
- */
-userSchema.methods.isPasswordMatch = async function (password) {
-  const user = this;
-  return bcrypt.compare(password, user.password);
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: Date,
 };
 
 /**

@@ -1,4 +1,8 @@
 import mongoose from "mongoose";
+
+// Period for a months and status currect status ["ACTIVE", "END", "INACTIVE"] // here inactive means the time before the start date
+// Start date for study
+
 const hireTutorSchema = new mongoose.Schema(
   {
     studentId: {
@@ -16,30 +20,58 @@ const hireTutorSchema = new mongoose.Schema(
       ref: "Subject",
       required: true,
     },
-    day: {
-      type: String,
-      enum: [
-        "MONDAY",
-        "TUESDAY",
-        "WEDNESDAY",
-        "THURSDAY",
-        "FRIDAY",
-        "SATURDAY",
-        "SUNDAY",
-      ],
+    addressID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Addresses",
       required: true,
     },
-    startTime: {
+    modeOfStudy: {
+      type: String,
+      required: true,
+      enum: ["ONLINE", "OFFLINE"],
+    },
+    days: [
+      {
+        day: {
+          type: String,
+          enum: [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY",
+          ],
+          required: true,
+        },
+        startTime: {
+          type: String,
+          required: true,
+        },
+        endTime: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    startDate: {
+      // Date of started teaching
       type: String,
       required: true,
     },
-    endTime: {
+    endDate: {
+      type: String,
+    },
+    timePeriod: {
+      // Number of months
       type: String,
       required: true,
     },
     status: {
+      // Status of currect application
       type: String,
-      enum: ["PENDING", "ACCEPTED", "CANCELED"],
+      enum: ["PENDING", "ACCEPTED", "REJECTED"],
       default: "PENDING",
     },
   },
