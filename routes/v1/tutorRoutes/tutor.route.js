@@ -18,4 +18,24 @@ tutorRouter.post(
   validate(tutorValidator.hireTutor),
   tutorController.hireTutor
 );
+
+// Tutor management routes
+tutorRouter.post(
+  "/",
+  validate(tutorValidator.tutorSchemaValidation),
+  tutorController.createTutorProfile
+);
+tutorRouter.get("/:id", tutorController.getTutorById);
+tutorRouter.get("/", tutorController.getAllTutors);
+tutorRouter.put("/:id", tutorController.updateTutorProfile);
+tutorRouter.delete("/:id", tutorController.deleteTutorProfile);
+
+// Specific actions
+tutorRouter.patch("/:id/subjects", tutorController.addSubject);
+tutorRouter.patch("/:id/availability", tutorController.updateAvailability);
+tutorRouter.patch(
+  "/:id/verification",
+  tutorController.updateVerificationStatus
+);
+
 export default tutorRouter;

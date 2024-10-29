@@ -77,3 +77,50 @@ export const hireTutor = async (data) => {
     return { status: false, message: "Error hiring tutor" };
   }
 };
+
+export const createTutorProfile = async (data) => {
+  const tutor = new Tutor(data);
+  return await tutor.save();
+};
+
+export const getTutorById = async (id) => {
+  return await Tutor.findById(id).populate("userId");
+};
+
+export const getAllTutors = async () => {
+  return await Tutor.find().populate("userId");
+};
+
+export const updateTutorProfile = async (id, data) => {
+  return await Tutor.findByIdAndUpdate(id, data, { new: true }).populate(
+    "userId"
+  );
+};
+
+export const deleteTutorProfile = async (id) => {
+  return await Tutor.findByIdAndDelete(id);
+};
+
+export const addSubject = async (id, subject) => {
+  const tutor = await Tutor.findById(id);
+  if (!tutor) throw new Error("Tutor not found");
+
+  tutor.subjects.push(subject);
+  return await tutor.save();
+};
+
+export const updateAvailability = async (id, availability) => {
+  const tutor = await Tutor.findById(id);
+  if (!tutor) throw new Error("Tutor not found");
+
+  tutor.availability = availability;
+  return await tutor.save();
+};
+
+export const updateVerificationStatus = async (id, status) => {
+  const tutor = await Tutor.findById(id);
+  if (!tutor) throw new Error("Tutor not found");
+
+  tutor.verificationStatus = status;
+  return await tutor.save();
+};

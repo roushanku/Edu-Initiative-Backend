@@ -137,3 +137,73 @@ export const hireTutor = Joi.object({
         "Status must be one of the following: PENDING, ACCEPTED, CANCELED.",
     }),
 });
+
+export const tutorSchemaValidation = {
+  body: Joi.object().keys({
+    userId: Joi.string().required(), // Assuming it's an ObjectId in string form
+    education: Joi.array()
+      .items(
+        Joi.object().keys({
+          degree: Joi.string().optional(),
+          institution: Joi.string().optional(),
+          graduationYear: Joi.number()
+            .integer()
+            .min(1900)
+            .max(new Date().getFullYear())
+            .optional(),
+          documents: Joi.array().items(Joi.string()).optional(), // URLs to degree certificates
+        })
+      )
+      .optional(),
+    experience: Joi.array()
+      .items(
+        Joi.object().keys({
+          institution: Joi.string().optional(),
+          position: Joi.string().optional(),
+          startDate: Joi.date().optional(),
+          endDate: Joi.date().greater(Joi.ref("startDate")).optional(),
+          description: Joi.string().optional(),
+        })
+      )
+      .optional(),
+    subjects: Joi.array()
+      .items(
+        Joi.object().keys({
+          name: Joi.string().required(),
+          level: Joi.array()
+            .items(
+              Joi.string().valid("elementary", "middle", "high", "college")
+            )
+            .optional(),
+          hourlyRate: Joi.number().positive().optional(),
+        })
+      )
+      .optional(),
+    availability: Joi.array()
+      .items(
+        Joi.object().keys({
+          dayOfWeek: Joi.number().integer().min(0).max(6).required(),
+          startTime: Joi.string()
+            .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
+            .required(),
+          endTime: Joi.string()
+            .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
+            .required(),
+        })
+      )
+      .optional(),
+    ratings: Joi.object()
+      .keys({
+        averageRating: Joi.number().min(0).max(5).optional(),
+        totalRatings: Joi.number().integer().min(0).optional(),
+      })
+      .optional(),
+    bio: Joi.string().optional(),
+    teachingMethodology: Joi.string().valid("Online", "Offline").required(),
+    medium: Joi.array().items(Joi.string()).optional(),
+    verificationStatus: Joi.string()
+      .valid("Pending", "Verified", "Rejected")
+      .optional()
+      .default("Pending"),
+  }),
+};
