@@ -15,8 +15,6 @@ export const hireTutor = async (req, res) => {
   res.json(response);
 };
 
-const tutorService = require("../services/tutorService");
-
 export const createTutorProfile = async (req, res) => {
   try {
     const tutor = await tutorService.createTutorProfile(req.body);

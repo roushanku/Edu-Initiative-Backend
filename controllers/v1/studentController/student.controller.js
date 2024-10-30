@@ -1,4 +1,4 @@
-import { studentService } from "../../../services";
+import { studentService } from "../../../services/index.js";
 
 export const createStudentProfile = async (req, res) => {
   try {

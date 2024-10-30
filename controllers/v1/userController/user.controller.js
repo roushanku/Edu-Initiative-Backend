@@ -1,6 +1,4 @@
-import { date } from "joi";
-import { userService } from "../../../services/index";
-
+import { userService } from "../../../services/index.js";
 export const registerUser = async (req, res) => {
   try {
     const user = await userService.registerUser(req.body);
