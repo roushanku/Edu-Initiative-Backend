@@ -62,7 +62,15 @@ const sessionSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: ["PENDING", "ONGOING", "COMPLETED", "CANCELLED"],
+      enum: [
+        "PENDING",
+        "ONGOING",
+        "COMPLETED",
+        "CANCELLED",
+        "TRIAL",
+        "APPROVED",
+      ],
+      //How to identify who has cancelled the session? -
       required: true,
     },
     pricing: {
@@ -78,8 +86,38 @@ const sessionSchema = new mongoose.Schema(
         required: true,
       },
     },
-  }
-  ,{ timestamps: true }
+    extensionRequest: [
+      {
+        status: {
+          type: String,
+          enum: [
+            "PENDING_TUTOR_APPROVAL",
+            "PAYMENT_PENDING",
+            "PENDING_ADMIN_APPROVAL",
+            "APPROVED",
+            "REJECTED",
+          ],
+          //"PAYMENT_PENDING" is added to the enum list -- it will be used to indicate that tutor has accpeted the extension request but payment is pending
+          required: true,
+        },
+        reason: {
+          type: String,
+        },
+        requestedDate: {
+          type: Date,
+          required: true,
+        },
+        approvedDate: {
+          type: Date,
+        },
+        extensionDuration: { //month
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+  },
+  { timestamps: true }
 );
 
 const Session = mongoose.model("Session", sessionSchema);

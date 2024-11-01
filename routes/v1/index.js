@@ -5,6 +5,7 @@ import studentRoute from "./studentRoutes/student.route.js";
 import subjectRoute from "./subjectRoutes/subjectRoute.js";
 import tutorRoute from "./tutorRoutes/tutor.route.js";
 import sessionRoute from "./sessionRoutes/sessionRoutes.js";
+import notificationRoute from "./notificationRoutes/notificationRoutes.js";
 const rootRouter = express.Router();
 
 const defaultRoutes = [
@@ -31,6 +32,10 @@ const defaultRoutes = [
   {
     path: "/session", // use for creating session, getting session
     route: sessionRoute,
+  },
+  {
+    path : "/notification", // use for creating notification, getting notification
+    route : notificationRoute,
   },
 ];
 

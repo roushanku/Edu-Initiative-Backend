@@ -10,4 +10,14 @@ sessionRouter.post(
     sessionController.createSession
 )
 
+sessionRouter.get(
+    '/:sessionId/extension-eligibility',
+    sessionController.checkSessionExtensionEligibility
+)
+
+sessionRouter.post(
+    '/:sessionId/extend',
+    sessionController.extendSession
+)
+
 export default sessionRouter;
