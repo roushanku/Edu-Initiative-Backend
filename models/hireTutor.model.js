@@ -62,11 +62,11 @@ const hireTutorSchema = new mongoose.Schema(
     endDate: {
       type: Date,
     },
-    timePeriod: {
-      type: Number, // Changed to Number for months
+    timePeriod: { // for the period of the study
+      type: Number, // Number for months
       required: true,
     },
-    status: {
+    status: { // for the status of the request
       type: String,
       enum: ["PENDING", "ACCEPTED", "REJECTED"],
       default: "PENDING",
