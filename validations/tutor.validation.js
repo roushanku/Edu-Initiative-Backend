@@ -2,14 +2,10 @@ import Joi from "joi";
 
 export const tutorApplication = {
   body: Joi.object().keys({
-    name: Joi.string().required(),
-    email: Joi.string().required().email(),
-    phone: Joi.string()
-      .required()
-      .pattern(new RegExp(/^\d{10}$/)),
+    userId: Joi.string().required(),
     aadharNumber: Joi.string()
-      .required()
-      .pattern(new RegExp(/^\d{12}$/)),
+    .required()
+    .pattern(/^\d{12}$/),
     whatsappNumber: Joi.string()
       .required()
       .pattern(new RegExp(/^\d{10}$/)),
@@ -61,149 +57,121 @@ export const tutorApplication = {
       .min(1)
       .required(),
     address: Joi.string().required(),
-    state: Joi.string().required(),
-    city: Joi.string().required(),
-    pincode: Joi.number().required().min(100000).max(999999), // Indian pincode format
     applicationStatus: Joi.string()
       .valid("UNDERREVIEW", "PENDING", "APPROVED", "REJECTED")
       .default("PENDING"),
+    documents: Joi.array().items(Joi.string()).required(),
   }),
 };
 
-export const hireTutor = Joi.object({
-  studentId: Joi.string().length(24).hex().required().messages({
-    "string.base": "Student ID must be a string.",
-    "string.hex": "Student ID must be a valid ObjectId.",
-    "string.length": "Student ID must be 24 characters long.",
-    "any.required": "Student ID is required.",
-  }),
 
-  tutorId: Joi.string().length(24).hex().required().messages({
-    "string.base": "Tutor ID must be a string.",
-    "string.hex": "Tutor ID must be a valid ObjectId.",
-    "string.length": "Tutor ID must be 24 characters long.",
-    "any.required": "Tutor ID is required.",
-  }),
-
-  subjectId: Joi.string().length(24).hex().required().messages({
-    "string.base": "Subject ID must be a string.",
-    "string.hex": "Subject ID must be a valid ObjectId.",
-    "string.length": "Subject ID must be 24 characters long.",
-    "any.required": "Subject ID is required.",
-  }),
-
-  day: Joi.string()
-    .valid(
-      "MONDAY",
-      "TUESDAY",
-      "WEDNESDAY",
-      "THURSDAY",
-      "FRIDAY",
-      "SATURDAY",
-      "SUNDAY"
-    )
-    .required()
-    .messages({
-      "string.base": "Day must be a string.",
-      "any.only":
-        "Day must be one of the following: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
-      "any.required": "Day is required.",
-    }),
-
-  startTime: Joi.string()
-    .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/) // HH:mm format
-    .required()
-    .messages({
-      "string.base": "Start time must be a string.",
-      "string.pattern.base": "Start time must be in the format HH:mm.",
-      "any.required": "Start time is required.",
-    }),
-
-  endTime: Joi.string()
-    .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/) // HH:mm format
-    .required()
-    .messages({
-      "string.base": "End time must be a string.",
-      "string.pattern.base": "End time must be in the format HH:mm.",
-      "any.required": "End time is required.",
-    }),
-
-  status: Joi.string()
-    .valid("PENDING", "ACCEPTED", "CANCELED")
-    .default("PENDING") // Default value if not provided
-    .messages({
-      "string.base": "Status must be a string.",
-      "any.only":
-        "Status must be one of the following: PENDING, ACCEPTED, CANCELED.",
-    }),
-});
-
-export const tutorSchemaValidation = {
+export const createTutorProfile = {
   body: Joi.object().keys({
-    userId: Joi.string().required(), // Assuming it's an ObjectId in string form
-    education: Joi.array()
-      .items(
-        Joi.object().keys({
-          degree: Joi.string().optional(),
-          institution: Joi.string().optional(),
-          graduationYear: Joi.number()
-            .integer()
-            .min(1900)
-            .max(new Date().getFullYear())
-            .optional(),
-          documents: Joi.array().items(Joi.string()).optional(), // URLs to degree certificates
-        })
-      )
-      .optional(),
-    experience: Joi.array()
-      .items(
-        Joi.object().keys({
-          institution: Joi.string().optional(),
-          position: Joi.string().optional(),
-          startDate: Joi.date().optional(),
-          endDate: Joi.date().greater(Joi.ref("startDate")).optional(),
-          description: Joi.string().optional(),
-        })
-      )
-      .optional(),
-    subjects: Joi.array()
-      .items(
-        Joi.object().keys({
-          name: Joi.string().required(),
-          level: Joi.array()
-            .items(
-              Joi.string().valid("elementary", "middle", "high", "college")
-            )
-            .optional(),
-          hourlyRate: Joi.number().positive().optional(),
-        })
-      )
-      .optional(),
-    availability: Joi.array()
-      .items(
-        Joi.object().keys({
-          dayOfWeek: Joi.number().integer().min(0).max(6).required(),
-          startTime: Joi.string()
-            .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-            .required(),
-          endTime: Joi.string()
-            .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-            .required(),
-        })
-      )
-      .optional(),
-    ratings: Joi.object()
-      .keys({
-        averageRating: Joi.number().min(0).max(5).optional(),
-        totalRatings: Joi.number().integer().min(0).optional(),
+    userId: Joi.string().required(),
+    education: Joi.array().items(
+      Joi.object().keys({
+        degree: Joi.string().required(),
+        institution: Joi.string().required(),
+        graduationYear: Joi.number().required(),
+        documents: Joi.array().items(Joi.string()).required(),
       })
-      .optional(),
-    bio: Joi.string().optional(),
-    teachingMethodology: Joi.string().valid("Online", "Offline").required(),
-    medium: Joi.array().items(Joi.string()).optional(),
-    verificationStatus: Joi.string()
-      .valid("Pending", "Verified", "Rejected")
-      .optional()
-      .default("Pending"),
+    ),
+    experience: Joi.array().items(
+      Joi.object().keys({
+        institution: Joi.string().required(),
+        position: Joi.string().required(),
+        startDate: Joi.date().required(),
+        endDate: Joi.date().required(),
+        description: Joi.string().required(),
+      })
+    ),
+    subjects: Joi.array().items(
+      Joi.object().keys({
+        subjectId: Joi.string().required(),
+        level: Joi.array().items(Joi.string()).required(),
+        hourlyRate: Joi.number().required(),
+      })
+    ),
+    availability: Joi.array().items(
+      Joi.object().keys({
+        dayOfWeek: Joi.string().valid("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday").required(),
+        startTime: Joi.string().required(),
+        endTime: Joi.string().required(),
+      })
+    ),
+    ratings: Joi.object().keys({
+      averageRating: Joi.number().required(),
+      totalRatings: Joi.number().required(),
+    }),
+    bio: Joi.string().required(),
+    teachingMethodology: Joi.string().required(),
+    medium: Joi.array().items(Joi.string()).required(),
+    isActive: Joi.boolean().required().default(true),
   }),
 };
+
+export const hireTutor = {
+  body: Joi.object().keys({
+    studentId: Joi.string().required(),
+    tutorId: Joi.string().required(),
+    subjectId: Joi.string().required(),
+    day: Joi.string().required(),
+    startTime: Joi.string().required(),
+    endTime: Joi.string().required(),
+    status: Joi.string().required(),
+  }),
+};
+
+export const getTutorById = {
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+}
+
+export const deleteTutorProfile = {
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+}
+
+export const addSubject  ={
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    subjectId: Joi.string().required(),
+    level: Joi.array().items(Joi.string()).required(),
+    hourlyRate: Joi.string().required(),
+  }),
+}
+
+export const addAvailability = {
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    dayOfWeek: Joi.string().valid("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday").required(),
+    startTime: Joi.string().required(),
+    endTime: Joi.string().required(),
+  }),
+}
+
+export const updateVerificationStatus = {
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    applicationStatus: Joi.string().valid("UNDERREVIEW", "PENDING", "APPROVED", "REJECTED").required(),
+  }),
+}
+
+export const updateIsActive = {
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    isActive: Joi.boolean().required(),
+  }),
+}
+
+

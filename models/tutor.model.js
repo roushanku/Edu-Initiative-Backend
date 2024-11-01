@@ -21,14 +21,18 @@ const tutorSchema = new mongoose.Schema({
   ],
   subjects: [
     {
-      name: String,
+      subjectId: { type: mongoose.Schema.Types.ObjectId, ref: "Subject", required: true }, // Reference to Subject model
       level: [String], // ['elementary', 'middle', 'high', 'college']
       hourlyRate: Number,
     },
   ],
   availability: [
     {
-      dayOfWeek: Number, // 0-6 (Sunday-Saturday)
+      dayOfWeek: {
+        type: String,
+        enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        required: true,
+      },
       startTime: String, // "HH:mm" format
       endTime: String,
     },
@@ -45,11 +49,7 @@ const tutorSchema = new mongoose.Schema({
     required: true,
   },
   medium: [String],
-  verificationStatus: {
-    type: String,
-    enum: ["Pending", "Verified", "Rejected"],
-    default: "Pending",
-  },
+  isActive: { type: Boolean, default: true },
 });
 
 const Tutor = mongoose.model("Tutor", tutorSchema);

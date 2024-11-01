@@ -5,21 +5,14 @@ import * as studentValidation from "../../../validations/student.validation.js";
 const studentRouter = express.Router();
 
 // Student management routes
-studentRouter.post(
-  "/",
-  validate(studentValidation.studentSchemaValidation),
-  studentController.createStudentProfile
-);
-studentRouter.get("/:id", studentController.getStudentById);
+studentRouter.post( "/", validate(studentValidation.createStudent), studentController.createStudentProfile );
+studentRouter.get("/:id", validate(studentValidation.getStudentById),  studentController.getStudentById);
 studentRouter.get("/", studentController.getAllStudents);
-studentRouter.put("/:id", studentController.updateStudentProfile);
-studentRouter.delete("/:id", studentController.deleteStudentProfile);
+studentRouter.put("/:id",validate(studentValidation.updateStudentProfile), studentController.updateStudentProfile);
+studentRouter.delete("/:id", validate(studentValidation.deleteStudentProfile), studentController.deleteStudentProfile);
 
 // Specific actions
-studentRouter.patch(
-  "/:id/preferences",
-  studentController.updateLearningPreferences
-);
-studentRouter.patch("/:id/subjects", studentController.addSubject);
+studentRouter.patch("/:id/preferences", validate(studentValidation.updateLearningPreferences), studentController.updateLearningPreferences );
+studentRouter.patch("/:id/subjects", validate(studentValidation.addSubject), studentController.addSubject);
 
 export default studentRouter;

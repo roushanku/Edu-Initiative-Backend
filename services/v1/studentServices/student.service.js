@@ -1,4 +1,5 @@
 import Student from "../../../models/student.model.js";
+import { userService } from "../../index.js";
 
 export const checkStudent = async (studentId) => {
   const student = await Student.findById(studentId);
@@ -8,22 +9,30 @@ export const checkStudent = async (studentId) => {
 };
 
 export const createStudentProfile = async (data) => {
-  const student = new Student(data);
-  return await student.save();
+  const userId = data.userId;
+  const user = await userService.getUserById(userId);
+  if(!user){
+    return { status: false, message: "User not found" };
+  }
+  if(user.role !== "User"){
+    return { status: false, message: "User cannot become a student" };
+  }
+  await userService.updateUser(userId, { role: "Student" });
+  const studentData = new Student(data);
+  const student =  await studentData.save();
+  return { status: true, message: "Student profile created successfully", data: student };
 };
 
 export const getStudentById = async (id) => {
-  return await Student.findById(id).populate("userId subjects.name");
+  return await Student.findById(id);
 };
 
 export const getAllStudents = async () => {
-  return await Student.find().populate("userId subjects.name");
+  return await Student.find();
 };
 
 export const updateStudentProfile = async (id, data) => {
-  return await Student.findByIdAndUpdate(id, data, { new: true }).populate(
-    "userId subjects.name"
-  );
+  return await Student.findByIdAndUpdate(id, data, { new: true });
 };
 
 export const deleteStudentProfile = async (id) => {

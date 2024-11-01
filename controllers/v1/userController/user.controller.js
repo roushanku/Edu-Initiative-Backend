@@ -125,7 +125,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-export const toggleUserStatus = async (req, res) => {
+export const toggleUserIsActive = async (req, res) => {
   try {
     const updatedUser = await userService.toggleUserStatus(req.params.id);
     if (!updatedUser) {

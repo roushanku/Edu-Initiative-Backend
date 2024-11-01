@@ -2,18 +2,8 @@ import { studentService } from "../../../services/index.js";
 
 export const createStudentProfile = async (req, res) => {
   try {
-    const student = await studentService.createStudentProfile(req.body);
-    if (!student) {
-      return res.json({
-        status: false,
-        message: "Failed to create student profile",
-      });
-    }
-    res.json({
-      status: true,
-      message: "Student profile created successfully",
-      data: student,
-    });
+    const response = await studentService.createStudentProfile(req.body);
+    res.json(response);
   } catch (error) {
     res.json({
       status: false,

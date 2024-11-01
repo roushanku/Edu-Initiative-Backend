@@ -2,6 +2,13 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../../../models/user.model.js";
 
+export const checkUser = async (userId) => {
+  const user = await User.findById(userId);
+  return user
+    ? { status: true, user }
+    : { status: false, message: "User not found" };
+};
+
 export const registerUser = async (data) => {
   const { email, password, firstName, lastName, role } = data;
   const hashedPassword = await bcrypt.hash(password, 10);

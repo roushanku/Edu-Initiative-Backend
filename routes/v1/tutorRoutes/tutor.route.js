@@ -5,37 +5,19 @@ import * as tutorController from "../../../controllers/v1/tutorController/tutor.
 
 const tutorRouter = express.Router();
 
-tutorRouter.get("/", tutorController.getTutors);
-
-tutorRouter.post(
-  "/application",
-  validate(tutorValidator.tutorApplication),
-  tutorController.createTutorApplication
-);
-
-tutorRouter.post(
-  "/hire",
-  validate(tutorValidator.hireTutor),
-  tutorController.hireTutor
-);
+tutorRouter.post( "/application", validate(tutorValidator.tutorApplication), tutorController.createTutorApplication );
+tutorRouter.post( "/hire", validate(tutorValidator.hireTutor), tutorController.hireTutor);
 
 // Tutor management routes
-tutorRouter.post(
-  "/",
-  validate(tutorValidator.tutorSchemaValidation),
-  tutorController.createTutorProfile
-);
-tutorRouter.get("/:id", tutorController.getTutorById);
+tutorRouter.post( "/", validate(tutorValidator.createTutorProfile), tutorController.createTutorProfile);
+tutorRouter.get("/:id",validate(tutorValidator.getTutorById), tutorController.getTutorById);
 tutorRouter.get("/", tutorController.getAllTutors);
 tutorRouter.put("/:id", tutorController.updateTutorProfile);
-tutorRouter.delete("/:id", tutorController.deleteTutorProfile);
+tutorRouter.delete("/:id", validate(tutorValidator.deleteTutorProfile), tutorController.deleteTutorProfile);
 
 // Specific actions
-tutorRouter.patch("/:id/subjects", tutorController.addSubject);
-tutorRouter.patch("/:id/availability", tutorController.updateAvailability);
-tutorRouter.patch(
-  "/:id/verification",
-  tutorController.updateVerificationStatus
-);
+tutorRouter.patch("/:id/subjects", validate(tutorValidator.addSubject), tutorController.addSubject);
+tutorRouter.post("/:id/availability", validate(tutorValidator.addAvailability), tutorController.addAvailability);
+tutorRouter.patch( "/:id/isActive", validate(tutorValidator.updateIsActive), tutorController.updateIsActive);
 
 export default tutorRouter;

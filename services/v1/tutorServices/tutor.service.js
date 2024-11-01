@@ -1,8 +1,9 @@
 import TutorApplication from "../../../models/tutorapplications.model.js";
 import HireTutor from "../../../models/hireTutor.model.js";
 import Tutor from "../../../models/tutor.model.js";
+import User from "../../../models/user.model.js";
 import logger from "../../../logger.js"; // Assuming you have a logger utility
-import { checkSubject } from "../subjectServices/subject.service.js";
+import { getSubjectById } from "../subjectServices/subject.service.js";
 import { checkStudent } from "../studentServices/student.service.js";
 
 const checkTutor = async (tutorId) => {
@@ -14,12 +15,20 @@ const checkTutor = async (tutorId) => {
 
 export const createTutorApplication = async (data) => {
   try {
+    const userId = data.userId;
+    const user = await User.findById(userId);
+    if(!user) {
+      return { status: false, message: "User not found" };
+    }
+    if (user.role === "Tutor") {
+      return { status: false, message: "User is already a tutor" };
+    }
+    const existingApplication = await TutorApplication.findOne({  userId });
+    if (existingApplication) {
+      return { status: false, message: "Tutor application already exists for this user" };
+    }
     const tutorApplication = await TutorApplication.create(data);
-    return {
-      status: true,
-      message: "Tutor application created",
-      data: tutorApplication,
-    };
+    return { status: true, message: "Tutor application created", data: tutorApplication, };
   } catch (error) {
     logger.error(`Error creating tutor application: ${error.message}`);
     return { status: false, message: "Error creating tutor application" };
@@ -60,7 +69,7 @@ export const hireTutor = async (data) => {
     return tutorCheck;
   }
 
-  const subjectCheck = await checkSubject(data.subjectId);
+  const subjectCheck = await getSubjectById(data.subjectId);
   if (!subjectCheck.status) {
     return subjectCheck;
   }
@@ -79,12 +88,30 @@ export const hireTutor = async (data) => {
 };
 
 export const createTutorProfile = async (data) => {
-  const tutor = new Tutor(data);
-  return await tutor.save();
+  const userId = data.userId;  
+  const user = await User.findById(userId);
+  if (!user) {
+    return { status: false, message: "User not found" };
+  }
+  if (user.role !== "User") {
+    return { status: false, message: "User cannot become tutor" };
+  }
+  const existingTutor = await Tutor.findOne({ userId });
+  if (existingTutor) {
+    return { status: false, message: "Tutor already exists for this user" };
+  }
+  let tutor = new Tutor(data);
+  tutor = await tutor.save();
+  return { status: true, message: "Tutor profile created", data: tutor };
 };
 
+
 export const getTutorById = async (id) => {
-  return await Tutor.findById(id).populate("userId");
+  const tutor = await Tutor.findById(id).populate("userId");
+  if(!tutor) {
+    return { status: false, message: "Tutor not found" };
+  }
+  return { status: true, message: "Tutor retrived successfully" , data: tutor };
 };
 
 export const getAllTutors = async () => {
@@ -92,35 +119,94 @@ export const getAllTutors = async () => {
 };
 
 export const updateTutorProfile = async (id, data) => {
-  return await Tutor.findByIdAndUpdate(id, data, { new: true }).populate(
+  const updatedTutor =  await Tutor.findByIdAndUpdate(id, data, { new: true }).populate(
     "userId"
   );
+  if (!updatedTutor) {
+    return { status: false, message: "Tutor profile update failed" };
+  }
+  return { status: true, message: "Tutor profile updated", data: updatedTutor };
 };
 
 export const deleteTutorProfile = async (id) => {
-  return await Tutor.findByIdAndDelete(id);
+  const tutor = await Tutor.findByIdAndDelete(id);
+  if (!tutor) {
+    return { status: false, message: "Tutor not found" };
+  }
+  return { status: true, message: "Tutor deleted" };
 };
 
 export const addSubject = async (id, subject) => {
+  const subjectId = subject.subjectId;
   const tutor = await Tutor.findById(id);
-  if (!tutor) throw new Error("Tutor not found");
 
+  if (!tutor) {
+    return { status: false, message: "Tutor not found" };
+  }
+  const isSubjectAlreadyPresent = tutor.subjects.some(
+    (existingSubject) => existingSubject.subjectId.toString() === subjectId.toString()
+  );
+
+  if (isSubjectAlreadyPresent) {
+    return { status: false, message: "Subject is already present in the tutor's list" };
+  }
   tutor.subjects.push(subject);
-  return await tutor.save();
+  const updatedTutor = await tutor.save();
+
+  return { status: true, message: "Subject added", data: updatedTutor };
 };
 
-export const updateAvailability = async (id, availability) => {
+
+export const addAvailability = async (id, newAvailability) => {
   const tutor = await Tutor.findById(id);
   if (!tutor) throw new Error("Tutor not found");
 
-  tutor.availability = availability;
-  return await tutor.save();
+  // Helper function to compare times as strings
+  const isTimeOverlap = (start1, end1, start2, end2) => {
+    return (
+      (start1 >= start2 && start1 < end2) ||
+      (end1 > start2 && end1 <= end2) ||
+      (start1 <= start2 && end1 >= end2)
+    );
+  };
+
+  // Check if the new availability overlaps with existing entries
+  for (const existingSlot of tutor.availability) {
+    if (
+      existingSlot.dayOfWeek === newAvailability.dayOfWeek &&
+      isTimeOverlap(
+        newAvailability.startTime,
+        newAvailability.endTime,
+        existingSlot.startTime,
+        existingSlot.endTime
+      )
+    ) {
+      return {
+        status: false,
+        message: `Time slot overlaps with existing availability on ${existingSlot.dayOfWeek} from ${existingSlot.startTime} to ${existingSlot.endTime}`
+      };
+    }
+  }
+
+  // Add the new availability if there are no overlaps
+  tutor.availability.push(newAvailability);
+  const updatedTutor = await tutor.save();
+
+  return {
+    status: true,
+    message: "Availability added",
+    data: updatedTutor,
+  };
 };
 
-export const updateVerificationStatus = async (id, status) => {
-  const tutor = await Tutor.findById(id);
+
+
+
+export const updateIsActive = async (id, isActive) => {
+  let tutor = await Tutor.findById(id);
   if (!tutor) throw new Error("Tutor not found");
 
-  tutor.verificationStatus = status;
-  return await tutor.save();
+  tutor.isActive = isActive;
+  tutor = await tutor.save();
+  return {status: true, message: "Tutor active status updated", data: tutor};
 };

@@ -56,20 +56,17 @@ const hireTutorSchema = new mongoose.Schema(
       },
     ],
     startDate: {
-      // Date of started teaching
-      type: String,
+      type: Date,
       required: true,
     },
     endDate: {
-      type: String,
+      type: Date,
     },
     timePeriod: {
-      // Number of months
-      type: String,
+      type: Number, // Changed to Number for months
       required: true,
     },
     status: {
-      // Status of currect application
       type: String,
       enum: ["PENDING", "ACCEPTED", "REJECTED"],
       default: "PENDING",
@@ -81,22 +78,20 @@ const hireTutorSchema = new mongoose.Schema(
 // Middleware to cancel other requests for the same day, time, and subject if one is accepted
 hireTutorSchema.pre("save", async function (next) {
   if (this.isModified("status") && this.status === "ACCEPTED") {
-    // Cancel other requests for the same student, day, time, and subject
     await this.model("HireTutor").updateMany(
       {
         studentId: this.studentId,
-        day: this.day,
-        startTime: this.startTime,
-        endTime: this.endTime,
-        subjectId: this.subjectId, // Match the subject as well
-        status: "PENDING", // Only affect pending requests
-        _id: { $ne: this._id }, // Exclude the current request
+        subjectId: this.subjectId,
+        status: "PENDING",
+        _id: { $ne: this._id },
       },
       { status: "CANCELED" }
     );
   }
   next();
 });
+
+
 
 const HireTutor = mongoose.model("HireTutor", hireTutorSchema);
 export default HireTutor;
