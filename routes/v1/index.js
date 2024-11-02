@@ -7,6 +7,7 @@ import addressRoute from "./addressRoutes/address.route.js";
 import authRoute from "./authRoutes/auth.route.js";
 import sessionRoute from "./sessionRoutes/sessionRoutes.js";
 import notificationRoute from "./notificationRoutes/notificationRoutes.js";
+import paymentRoute from './paymentRoutes/payment.route.js';
 const rootRouter = express.Router();
 
 const defaultRoutes = [
@@ -33,6 +34,10 @@ const defaultRoutes = [
   {
     path: "/address", // use for creating tutor, getting tutor
     route: addressRoute,
+  },
+  {
+    path: "/payment", // use for creating tutor, getting tutor
+    route: paymentRoute,
   },
   {
     path: "/session", // use for creating session, getting session

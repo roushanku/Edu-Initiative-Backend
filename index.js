@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use("/v1/api", rootRouter);
 
-// Connect to MongoDB
+// Connect to MongoDBf
 connectMongoDb();
 
 
