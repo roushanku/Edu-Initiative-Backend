@@ -1,55 +1,47 @@
 import * as paymentService from '../../../services/v1/paymentServices/payment.service.js';
 import { errorResponse, successResponse } from '../../../utils/responseHandler.js';
-import { ApiError } from '../utils/ApiError.js';
-import { catchAsync } from '../utils/catchAsync.js';
 
-export const createPayment = catchAsync(async (req, res) => {
-  const payment = await paymentService.createPayment({
+export const createPayment = async (req, res) => {
+  const response = await paymentService.createPayment({
     ...req.body,
     transferFrom: req.user._id
   });
-  if(!payment) return errorResponse(res,'Payment failed', 400);
-  return successResponse(res, payment, 'Payment successful', 201);
-});
+  res.json(response);
+};
 
-export const listPayments = catchAsync(async (req, res) => {
+export const listPayments = async (req, res) => {
   const { page = 1, limit = 10, status, startDate, endDate } = req.query;
-  const payments = await paymentService.listPayments({
+  const response = await paymentService.listPayments({
     page: parseInt(page),
     limit: parseInt(limit),
     status,
     startDate,
     endDate
   });
-  return successResponse(res, payments, 'Payments retrieved', 200);
-});
+  res.json(response)
+};
 
-export const getPaymentById = catchAsync(async (req, res) => {
-  const payment = await paymentService.getPaymentById(req.params.id);
-  if(!payment) return errorResponse(res,'Payment not found', 404);
-  return successResponse(res, payment, 'Payment retrieved', 200);
-});
+export const getPaymentById = async (req, res) => {
+  const response = await paymentService.getPaymentById(req.params.id);
+  res.json(response)
+};
 
-export const refundPayment = catchAsync(async (req, res) => {
-  const payment = await paymentService.refundPayment(req.params.id, req.body.reason);
-  if(!payment) return errorResponse(res,'Payment refund failed', 400);
-  return successResponse(res, payment, 'Payment refunded', 200);
-});
+export const refundPayment = async (req, res) => {
+  const response = await paymentService.refundPayment(req.params.id, req.body.reason);
+  res.json(response)
+};
 
-export const getUserPayments = catchAsync(async (req, res) => {
-  const payments = await paymentService.getUserPayments(req.params.userId);
-  if(!payments) return errorResponse(res,'No payments found for this user', 404);
-  return successResponse(res, payments, 'Payments retrieved', 200);
-});
+export const getUserPayments = async (req, res) => {
+  const response = await paymentService.getUserPayments(req.params.userId);
+  res.json(response)
+};
 
-export const verifyPayment = catchAsync(async (req, res) => {
-  const payment = await paymentService.verifyPayment(req.params.id);
-  if(!payment) return errorResponse(res,'Payment verification failed', 400);
-  return successResponse(res, payment, 'Payment verified', 200);
-});
+export const verifyPayment = async (req, res) => {
+  const response = await paymentService.verifyPayment(req.params.id);
+  res.json(response)
+};
 
-export const getSessionPayments = catchAsync(async (req, res) => {
-  const payments = await paymentService.getSessionPayments(req.params.sessionId);
-  if(!payments) return errorResponse(res,'No payments found for this session', 404);
-  return successResponse(res, payments, 'Payments retrieved', 200);
-});
+export const getSessionPayments = async (req, res) => {
+  const response = await paymentService.getSessionPayments(req.params.sessionId);
+  res.json(response)
+};

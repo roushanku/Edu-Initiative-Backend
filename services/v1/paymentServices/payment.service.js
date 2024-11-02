@@ -1,7 +1,15 @@
 import Payment from '../../../models/payment.model.js';
 import mongoose from 'mongoose';
+import User from '../../../models/user.model.js';
 
 export const createPayment = async (paymentData) => {
+  const transferFrom = paymentData.transferFrom;
+  const transferTo = paymentData.transferTo;
+  const existingUserFrom = await User.findById(transferFrom);
+  if(!existingUserFrom) return {status: false, message: 'Transafer from User not found'};
+  const existingUserTo = await User.findById(transferTo);
+  if(!existingUserTo) return {status: false, message: 'Transafer to User not found'};
+
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -44,24 +52,33 @@ export const listPayments = async ({ page, limit, status, startDate, endDate }) 
   const total = await Payment.countDocuments(query);
 
   return {
-    payments,
-    totalPages: Math.ceil(total / limit),
-    currentPage: page,
-    total
+    status:   true,
+    message:  'Payments retrieved',
+    data:     {
+      payments,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
+    },
   };
 };
 
 export const getPaymentById = async (paymentId) => {
-  return Payment.findById(paymentId)
+  const payment = await Payment.findById(paymentId)
     .populate('transferFrom', 'name email')
     .populate('transferTo', 'name email');
+    return {
+      status: true,
+      message: 'Payment retrieved',
+      data: payment,
+    }
 };
 
 export const refundPayment = async (paymentId, reason) => {
   const payment = await Payment.findById(paymentId);
-  if (!payment) return null;
+  if (!payment) return { status: false, message: 'Payment not found' };
   if (payment.status !== 'Completed') {
-    return null
+    return {status: false, message: 'Payment not completed'};
   }
 
   const session = await mongoose.startSession();
@@ -77,7 +94,7 @@ export const refundPayment = async (paymentId, reason) => {
     await payment.save({ session });
 
     await session.commitTransaction();
-    return payment;
+    return {status: true, message: 'Payment refunded', data: payment}; 
   } catch (error) {
     await session.abortTransaction();
     throw error;
@@ -87,19 +104,24 @@ export const refundPayment = async (paymentId, reason) => {
 };
 
 export const getUserPayments = async (userId) => {
-  return Payment.find({
+  const payment =  Payment.find({
     $or: [{ transferFrom: userId }, { transferTo: userId }]
   })
     .populate('transferFrom', 'name email')
     .populate('transferTo', 'name email')
     .sort({ createdAt: -1 });
+  return {
+    status: true,
+    message: 'Payments retrieved',
+    data: payment,
+  };
 };
 
 export const verifyPayment = async (paymentId) => {
   const payment = await Payment.findById(paymentId);
-  if (!payment) return null;
+  if (!payment) return { status: false, message: 'Payment not found' };
   if (payment.status !== 'Pending') {
-    return null;
+    return { status: false, message: 'Payment already verified' };
   }
 
   // Here you would verify with payment gateway
@@ -109,14 +131,23 @@ export const verifyPayment = async (paymentId) => {
   payment.updatedAt = new Date();
   await payment.save();
 
-  return payment;
+  return {
+    status: true,
+    message: 'Payment verified',
+    data: payment,
+  }
 };
 
 export const getSessionPayments = async (sessionId) => {
-  return Payment.find({ sessionId })
+  const payment =  Payment.find({ sessionId })
     .populate('transferFrom', 'name email')
     .populate('transferTo', 'name email')
     .sort({ createdAt: -1 });
+  return {
+    status: true,
+    message: 'Payments retrieved',
+    data: payment,
+  };
 };
 
 // Utility function to generate transaction ID

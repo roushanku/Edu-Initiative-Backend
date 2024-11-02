@@ -1,9 +1,8 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 export const createPayment = {
   body: Joi.object().keys({
     sessionId: Joi.string().required(),
-    transferFrom: Joi.string().required(),
     transferTo: Joi.string().required(),
     amount: Joi.number().required(),
     currency: Joi.string().required(),
