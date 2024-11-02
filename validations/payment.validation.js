@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 export const createPayment = {
   body: Joi.object().keys({

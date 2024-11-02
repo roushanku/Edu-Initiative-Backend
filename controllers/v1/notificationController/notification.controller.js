@@ -23,3 +23,8 @@ export const markAllNotificationsAsRead = async (req, res) => {
     const response = await notificationService.markAllNotificationsAsRead(req.params.userId);
     res.json(response);
 }
+
+export const sendBookingRequestNotification = async (req, res) => {
+    const response = await notificationService.sendBookingRequestNotification(req.body);
+    res.json(response);
+}

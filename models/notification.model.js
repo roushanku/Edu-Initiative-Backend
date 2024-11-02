@@ -19,6 +19,11 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  emailStatus: {
+    type: String,
+    enum: ['SENT', 'FAILED'],
+    default: null,
+  },
   type: {
     type: String,
     enum: [

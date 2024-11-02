@@ -37,4 +37,9 @@ notificationRouter.patch(
     notificationController.markAllNotificationsAsRead
 )
 
+notificationRouter.post(
+    '/send-email/booking-request',
+    notificationController.sendBookingRequestNotification
+)
+
 export default notificationRouter;
