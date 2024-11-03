@@ -10,6 +10,7 @@ export const createPayment = async (req, res) => {
 };
 
 export const listPayments = async (req, res) => {
+export const listPayments = async (req, res) => {
   const { page = 1, limit = 10, status, startDate, endDate } = req.query;
   const response = await paymentService.listPayments({
     page: parseInt(page),

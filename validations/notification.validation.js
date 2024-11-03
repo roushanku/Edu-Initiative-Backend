@@ -107,3 +107,15 @@ export const getNotificationsValidation = {
             .optional(),
     })
 };
+
+export const sendBookingRequestNotificationValidation = {
+    body: Joi.object().keys({
+        userId: Joi.string()
+            .custom(objectId)
+            .required(),
+
+        tutorId: Joi.string()
+            .custom(objectId)
+            .required(),
+    })
+}
