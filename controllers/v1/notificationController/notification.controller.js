@@ -1,12 +1,8 @@
 import { notificationService } from '../../../services/index.js';
-import EmailService from '../../../services/v1/emailServices/email.service.js';
 
 export const createNotification = async (req, res) => {
   try {
     const response = await notificationService.createNotification(req.body);
-    // if (isEmailRequired(notification.type)) {
-    //   await EmailService.queueEmail(notification);
-    // }
     res.json(response);
   } catch (error) {
     res.json({ status: false, message: error.message });
