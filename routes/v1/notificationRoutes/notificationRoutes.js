@@ -1,45 +1,17 @@
 import express from 'express';
 import * as notificationController from '../../../controllers/v1/notificationController/notification.controller.js';
+import * as notificationValidator from '../../../validations/notification.validation.js';
 import validate from '../../../middleware/validate.js';
-import * as notificationValidator from '../../../validations/notification.validation.js'
-const notificationRouter = express.Router();
+import { authenticate } from '../../../middleware/auth.middleware.js';
 
-//create a notification for a user
-notificationRouter.post(
-    '/',
-    validate(notificationValidator.createNotificationValidation),
-    notificationController.createNotification
-)
+const router = express.Router();
 
-//get all notifications for a user
-notificationRouter.get(
-    '/',
-    validate(notificationValidator.getNotificationsValidation),
-    notificationController.getNotifications
-)
+router.use(authenticate);
+router.post('/', validate(notificationValidator.createNotification), notificationController.createNotification);
+router.get('/user/:userId', validate(notificationValidator.getUserNotifications), notificationController.getUserNotifications);
+router.patch('/:id/read', validate(notificationValidator.markNotificationAsRead), notificationController.markNotificationAsRead);
+router.delete('/:id', validate(notificationValidator.deleteNotification), notificationController.deleteNotification);
+router.get('/user/:userId/unread-count', validate(notificationValidator.getUnreadCount), notificationController.getUnreadCount);
+router.get('/type/:type', validate(notificationValidator.getNotificationsByType), notificationController.getNotificationsByType);
 
-//get unread notifications for a user
-notificationRouter.get(
-    '/unread',
-    validate(notificationValidator.getUnreadNotificationsValidation),
-    notificationController.getUnreadNotifications
-)
-
-notificationRouter.patch(
-    '/:notificationId/read',
-    validate(notificationValidator.markNotificationAsReadValidation),
-    notificationController.markNotificationAsRead
-)
-
-notificationRouter.patch(
-    '/:userId/mark-all-as-read',
-    validate(notificationValidator.markAllNotificationsAsReadValidation),
-    notificationController.markAllNotificationsAsRead
-)
-
-notificationRouter.post(
-    '/send-email/booking-request',
-    notificationController.sendBookingRequestNotification
-)
-
-export default notificationRouter;
+export default router;

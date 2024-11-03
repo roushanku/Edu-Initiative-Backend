@@ -1,30 +1,59 @@
-import * as notificationService from '../../../services/v1/notificationServices/notification.service.js';
+import { notificationService } from '../../../services/index.js';
+import EmailService from '../../../services/v1/emailServices/email.service.js';
+
 export const createNotification = async (req, res) => {
+  try {
     const response = await notificationService.createNotification(req.body);
+    // if (isEmailRequired(notification.type)) {
+    //   await EmailService.queueEmail(notification);
+    // }
     res.json(response);
-}
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
 
-export const getNotifications = async (req, res) => {
-    const response = await notificationService.getNotifications(req.query);
+export const getUserNotifications = async (req, res) => {
+  try {
+    const response = await notificationService.getUserNotifications(req.params.userId, req.query.page, req.query.limit);
     res.json(response);
-}
-
-export const getUnreadNotifications = async (req, res) => {
-    const response = await notificationService.getUnreadNotifications(req.query);
-    res.json(response);
-}
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
 
 export const markNotificationAsRead = async (req, res) => {
-    const response = await notificationService.markNotificationAsRead(req.params.notificationId);
+  try {
+    const response = await notificationService.markAsReadByUserId(req.params.id);
     res.json(response);
-}
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
 
-export const markAllNotificationsAsRead = async (req, res) => {
-    const response = await notificationService.markAllNotificationsAsRead(req.params.userId);
+export const deleteNotification = async (req, res) => {
+  try {
+    const response = await notificationService.deleteNotification(req.params.id);
     res.json(response);
-}
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
 
-export const sendBookingRequestNotification = async (req, res) => {
-    const response = await notificationService.sendBookingRequestNotification(req.body);
+export const getUnreadCount = async (req, res) => {
+  try {
+    const response = await notificationService.getUnreadCount(req.params.userId);
     res.json(response);
-}
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
+
+export const getNotificationsByType = async (req, res) => {
+  try {
+    const response = await notificationService.getNotificationsByType(req.params.type);
+    res.json(response);
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
