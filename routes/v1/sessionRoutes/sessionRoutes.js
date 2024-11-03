@@ -20,4 +20,8 @@ sessionRouter.post(
     sessionController.extendSession
 )
 
+sessionRouter.patch(
+    '/:sessionId/change-status',
+    sessionController.changeSessionStatus
+)
 export default sessionRouter;

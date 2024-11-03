@@ -64,6 +64,7 @@ const sessionSchema = new mongoose.Schema(
       type: String,
       enum: [
         "PENDING",
+        "PAYMENT_PENDING",
         "ONGOING",
         "COMPLETED",
         "CANCELLED",

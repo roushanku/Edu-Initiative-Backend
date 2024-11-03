@@ -13,3 +13,8 @@ export const extendSession = async (req, res) => {
   const response = await sessionService.extendSession(req.params.sessionId);
   res.json(response);
 }
+
+export const changeSessionStatus = async (req, res) => {
+  const response = await sessionService.changeSessionStatus(req.params.sessionId, req.body);
+  res.json(response);
+}
