@@ -1,4 +1,4 @@
-import { studentService } from "../../../services/index.js";
+import { studentService } from '../../../services/index.js';
 
 export const createStudentProfile = async (req, res) => {
   try {
@@ -7,6 +7,7 @@ export const createStudentProfile = async (req, res) => {
   } catch (error) {
     res.json({
       status: false,
+      test: 'Test',
       message: error.message,
     });
   }
@@ -18,12 +19,12 @@ export const getStudentById = async (req, res) => {
     if (!student) {
       return res.json({
         status: false,
-        message: "Student not found",
+        message: 'Student not found',
       });
     }
     res.json({
       status: true,
-      message: "Student retrieved successfully",
+      message: 'Student retrieved successfully',
       data: student,
     });
   } catch (error) {
@@ -39,7 +40,7 @@ export const getAllStudents = async (req, res) => {
     const students = await studentService.getAllStudents();
     res.json({
       status: true,
-      message: "Students retrieved successfully",
+      message: 'Students retrieved successfully',
       data: students,
     });
   } catch (error) {
@@ -52,19 +53,16 @@ export const getAllStudents = async (req, res) => {
 
 export const updateStudentProfile = async (req, res) => {
   try {
-    const updatedStudent = await studentService.updateStudentProfile(
-      req.params.id,
-      req.body
-    );
+    const updatedStudent = await studentService.updateStudentProfile(req.params.id, req.body);
     if (!updatedStudent) {
       return res.json({
         status: false,
-        message: "Student profile update failed",
+        message: 'Student profile update failed',
       });
     }
     res.json({
       status: true,
-      message: "Student profile updated successfully",
+      message: 'Student profile updated successfully',
       data: updatedStudent,
     });
   } catch (error) {
@@ -77,18 +75,16 @@ export const updateStudentProfile = async (req, res) => {
 
 export const deleteStudentProfile = async (req, res) => {
   try {
-    const deletedStudent = await studentService.deleteStudentProfile(
-      req.params.id
-    );
+    const deletedStudent = await studentService.deleteStudentProfile(req.params.id);
     if (!deletedStudent) {
       return res.json({
         status: false,
-        message: "Failed to delete student profile",
+        message: 'Failed to delete student profile',
       });
     }
     res.json({
       status: true,
-      message: "Student profile deleted successfully",
+      message: 'Student profile deleted successfully',
     });
   } catch (error) {
     res.json({
@@ -100,13 +96,10 @@ export const deleteStudentProfile = async (req, res) => {
 
 export const updateLearningPreferences = async (req, res) => {
   try {
-    const updatedPreferences = await studentService.updateLearningPreferences(
-      req.params.id,
-      req.body
-    );
+    const updatedPreferences = await studentService.updateLearningPreferences(req.params.id, req.body);
     res.json({
       status: true,
-      message: "Learning preferences updated successfully",
+      message: 'Learning preferences updated successfully',
       data: updatedPreferences,
     });
   } catch (error) {
@@ -119,13 +112,10 @@ export const updateLearningPreferences = async (req, res) => {
 
 export const addSubject = async (req, res) => {
   try {
-    const updatedStudent = await studentService.addSubject(
-      req.params.id,
-      req.body.subject
-    );
+    const updatedStudent = await studentService.addSubject(req.params.id, req.body.subject);
     res.json({
       status: true,
-      message: "Subject added successfully",
+      message: 'Subject added successfully',
       data: updatedStudent,
     });
   } catch (error) {

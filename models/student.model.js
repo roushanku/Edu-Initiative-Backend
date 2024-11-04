@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 // Student Profile Schema
 const studentSchema = {
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   gradeLevel: String,
   school: String,
   subjects: [
     {
       // For recommendation system
-      name: {
+      subjectCode: {
         type: String,
-        ref: "Subjects",
+        ref: 'Subjects',
       },
     },
   ],
@@ -29,5 +29,5 @@ const studentSchema = {
 /**
  * @typedef Student
  */
-const Student = mongoose.model("Student", studentSchema);
+const Student = mongoose.model('Student', studentSchema);
 export default Student;

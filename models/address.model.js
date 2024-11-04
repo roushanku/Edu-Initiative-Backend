@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 // Address Schema
 const addressSchema = {
-  type: { type: String, enum: ["Home", "Work", "Other"], default: "Home" },
+  type: { type: String, enum: ['Home', 'Work', 'Other'], default: 'Home' },
   label: String, // Custom label for the address (e.g., "John's House", "Library")
   town: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
-  country: { type: String, required: true, default: "India" },
+  country: { type: String, required: true, default: 'India' },
   zipCode: { type: String, required: true },
   location: {
-    type: { type: String, enum: ["Point"], default: "Point" },
+    type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: [Number], // [longitude, latitude]
   },
   additionalInfo: String, // Landmarks, building name, floor, etc.
@@ -19,6 +19,6 @@ const addressSchema = {
   updatedAt: Date,
 };
 
-const Address = mongoose.model("Address", addressSchema);
+const Addresses = mongoose.model('Addresses', addressSchema);
 
-export default Address;
+export default Addresses;

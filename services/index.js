@@ -5,3 +5,4 @@ export * as subjectService from './v1/subjectServices/subject.service.js';
 export * as addressService from './v1/addressServices/address.service.js';
 export * as paymentService from './v1/paymentServices/payment.service.js';
 export * as notificationService from './v1/notificationServices/notification.service.js';
+export * as hireTutorService from './v1/hireTutorServices/hireTutor.service.js';

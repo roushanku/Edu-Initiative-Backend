@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export const createStudent = {
   body: Joi.object().keys({
@@ -8,19 +8,15 @@ export const createStudent = {
     subjects: Joi.array()
       .items(
         Joi.object().keys({
-          name: Joi.string().required(), // Assuming subject name is required
+          subjectCode: Joi.string().required(), // Assuming subject name is required
         })
       )
       .optional(),
     learningPreferences: Joi.object()
       .keys({
         preferredLanguage: Joi.string().optional(),
-        learningMode: Joi.array()
-          .items(Joi.string().valid("ONLINE", "OFFLINE"))
-          .optional(),
-        groupPreference: Joi.string()
-          .valid("individual", "group", "both")
-          .optional(),
+        learningMode: Joi.array().items(Joi.string().valid('ONLINE', 'OFFLINE')).optional(),
+        groupPreference: Joi.string().valid('individual', 'group', 'both').optional(),
       })
       .optional(),
     parentGuardianInfo: Joi.object()
@@ -34,7 +30,6 @@ export const createStudent = {
       .optional(),
   }),
 };
-
 
 export const getStudentById = {
   params: Joi.object().keys({
@@ -59,12 +54,8 @@ export const updateStudentProfile = {
     learningPreferences: Joi.object()
       .keys({
         preferredLanguage: Joi.string().optional(),
-        learningMode: Joi.array()
-          .items(Joi.string().valid("ONLINE", "OFFLINE"))
-          .optional(),
-        groupPreference: Joi.string()
-          .valid("individual", "group", "both")
-          .optional(),
+        learningMode: Joi.array().items(Joi.string().valid('ONLINE', 'OFFLINE')).optional(),
+        groupPreference: Joi.string().valid('individual', 'group', 'both').optional(),
       })
       .optional(),
     parentGuardianInfo: Joi.object()
@@ -77,13 +68,13 @@ export const updateStudentProfile = {
       })
       .optional(),
   }),
-}
+};
 
 export const deleteStudentProfile = {
   params: Joi.object().keys({
     id: Joi.string().required(),
   }),
-}
+};
 
 export const updateLearningPreferences = {
   params: Joi.object().keys({
@@ -91,14 +82,10 @@ export const updateLearningPreferences = {
   }),
   body: Joi.object().keys({
     preferredLanguage: Joi.string().optional(),
-    learningMode: Joi.array()
-      .items(Joi.string().valid("ONLINE", "OFFLINE"))
-      .optional(),
-    groupPreference: Joi.string()
-      .valid("individual", "group", "both")
-      .optional(),
+    learningMode: Joi.array().items(Joi.string().valid('ONLINE', 'OFFLINE')).optional(),
+    groupPreference: Joi.string().valid('individual', 'group', 'both').optional(),
   }),
-}
+};
 
 export const addSubject = {
   params: Joi.object().keys({
@@ -107,4 +94,4 @@ export const addSubject = {
   body: Joi.object().keys({
     name: Joi.string().required(),
   }),
-}
+};

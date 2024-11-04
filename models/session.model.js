@@ -1,25 +1,25 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const sessionSchema = new mongoose.Schema(
   {
     hireRequestId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "HireTutor",
+      ref: 'HireTutor',
       required: true,
     },
     tutorId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Tutor",
+      ref: 'Tutor',
       required: true,
     },
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
+      ref: 'Student',
       required: true,
     },
     studentType: {
       type: String,
-      enum: ["REGISTERED", "NON-REGISTERED"],
+      enum: ['REGISTERED', 'NON-REGISTERED'],
       required: true,
     },
     startDate: {
@@ -34,15 +34,7 @@ const sessionSchema = new mongoose.Schema(
       {
         day: {
           type: String,
-          enum: [
-            "MONDAY",
-            "TUESDAY",
-            "WEDNESDAY",
-            "THURSDAY",
-            "FRIDAY",
-            "SATURDAY",
-            "SUNDAY",
-          ],
+          enum: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
           required: true,
         },
 
@@ -62,16 +54,10 @@ const sessionSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: [
-        "PENDING",
-        "ONGOING",
-        "COMPLETED",
-        "CANCELLED",
-        "TRIAL",
-        "APPROVED",
-      ],
+      enum: ['PENDING', 'ONGOING', 'COMPLETED', 'CANCELLED', 'TRIAL', 'APPROVED', 'PAYMENT_PENDING'],
       //How to identify who has cancelled the session? -
       required: true,
+      default: 'PENDING',
     },
     pricing: {
       hourlyRate: {
@@ -82,7 +68,7 @@ const sessionSchema = new mongoose.Schema(
     location: {
       addressId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Addresses",
+        ref: 'Addresses',
         required: true,
       },
     },
@@ -90,13 +76,7 @@ const sessionSchema = new mongoose.Schema(
       {
         status: {
           type: String,
-          enum: [
-            "PENDING_TUTOR_APPROVAL",
-            "PAYMENT_PENDING",
-            "PENDING_ADMIN_APPROVAL",
-            "APPROVED",
-            "REJECTED",
-          ],
+          enum: ['PENDING_TUTOR_APPROVAL', 'PAYMENT_PENDING', 'PENDING_ADMIN_APPROVAL', 'APPROVED', 'REJECTED'],
           //"PAYMENT_PENDING" is added to the enum list -- it will be used to indicate that tutor has accpeted the extension request but payment is pending
           required: true,
         },
@@ -110,7 +90,8 @@ const sessionSchema = new mongoose.Schema(
         approvedDate: {
           type: Date,
         },
-        extensionDuration: { //month
+        extensionDuration: {
+          //month
           type: Number,
           required: true,
         },
@@ -120,5 +101,5 @@ const sessionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Session = mongoose.model("Session", sessionSchema);
+const Session = mongoose.model('Session', sessionSchema);
 export default Session;

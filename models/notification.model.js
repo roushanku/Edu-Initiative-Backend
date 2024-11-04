@@ -22,7 +22,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['BOOKING_REQUEST', 'BOOKING_CONFIRMED', 'BOOKING_CANCELLED', 'PAYMENT_RECEIVED', 'PAYMENT_CONFIRMED', 'REMINDER', 'SYSTEM'],
+      enum: ['BOOKING_REQUEST', 'TUTOR_REQUEST', 'BOOKING_CONFIRMED', 'BOOKING_CANCELLED', 'PAYMENT_RECEIVED', 'PAYMENT_CONFIRMED', 'REMINDER', 'SYSTEM'],
       required: true,
     },
     relatedEntityId: {
