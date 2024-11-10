@@ -1,225 +1,161 @@
 import Session from '../../../models/session.model.js';
-import HireTutor from '../../../models/hireTutor.model.js';
-import Tutor from '../../../models/tutor.model.js';
-import Student from '../../../models/student.model.js';
+import { notificationService, hireTutorService } from '../../../services/index.js';
 
 export const createSession = async (sessionData) => {
-  try {
-    const hireRequesId = sessionData.hireRequestId;
-    const hireRequest = await HireTutor.findById(hireRequesId);
+  const { hireRequestId } = sessionData;
 
-    if (!hireRequest) {
-      return { status: false, message: 'Hire request not found' };
-    }
+  const hireRequest = await hireTutorService.getRequestById(hireRequestId);
+  if (!hireRequest) return { status: false, message: 'Hire request not found' };
 
-    const tutorId = sessionData.tutorId;
-    const tutor = await Tutor.findById(tutorId);
+  const existingSession = await getSessionByHireRequestId(hireRequestId);
+  if (existingSession) return { status: false, message: 'Session already exists for this hire request' };
 
-    if (!tutor) {
-      return { status: false, message: 'Tutor not found' };
-    }
+  const addressId = hireRequest.data.addressId._id;
+  sessionData.tutorId = hireRequest.data.tutorId;
+  sessionData.studentId = hireRequest.data.studentId;
+  sessionData.location = { addressId };
 
-    const studentId = sessionData.studentId;
-    const student = await Student.findById(studentId);
+  const session = new Session(sessionData);
+  await session.save();
 
-    if (!student) {
-      return { status: false, message: 'Student not found' };
-    }
-    const startDate = sessionData.startDate;
-    const endDate = sessionData.endDate;
-
-    if (startDate > endDate) {
-      return { status: false, message: 'Start date cannot be after end date' };
-    }
-
-    const newSession = await Session.create(sessionData);
-    return {
-      status: true,
-      message: 'Session created successfully',
-      data: newSession,
-    };
-  } catch {
-    logger.error(`Error creating session: ${error.message}`);
-    return { status: false, message: 'Error creating session' };
-  }
-};
-
-export const checkSessionExtensionEligibility = async (sessionId) => {
-  const session = await Session.findById(sessionId);
-  if (!session) {
-    return { status: false, message: 'Session not found' };
-  }
-
-  if (session.status !== 'ONGOING') {
-    return { status: false, message: 'Only ongoing session can be extended' };
-  }
-
-  // Check for existing pending requests
-  const hasPendingRequest = session.extensionRequest.some((req) => req.status === 'PENDING_TUTOR_APPROVAL' || req.status === 'PAYMENT_PENDING' || req.status === 'PENDING_ADMIN_APPROVAL');
-
-  if (hasPendingRequest) {
-    return {
-      status: false,
-      requestStatus: session.extensionRequest.status,
-      message: 'Session already has a pending extension request',
-    };
-  }
-
-  const daysUntilEnd = differenceInDays(session.endDate, new Date());
-
-  // Check if within 5-day window
-  const isWithinWindow = daysUntilEnd < 5;
+  // Notify relevant parties
+  await notificationService.createNotification({
+    userId: session.tutorId,
+    title: 'New Session Created',
+    message: `A new session has been scheduled`,
+    type: 'SESSION_CREATED',
+    relatedEntityId: session._id,
+    relatedEntityType: 'Session',
+  });
 
   return {
     status: true,
-    message: 'Session is eligible to extend',
-    data: {
-      eligible: isWithinWindow && !hasExtensionRequest,
-      currentEndDate: session.endDate,
-    },
+    message: 'Session created successfully',
+    data: session,
   };
 };
 
-export const extendSession = async (sessionId, extensionDuration) => {
-  const eligibility = await checkSessionExtensionEligibility(sessionId);
-  if (!eligibility.data.eligible) {
-    return {
-      status: false,
-      message: 'Session is not eligible to extend',
-    };
+export const listSessions = async (filters) => {
+  const query = {};
+
+  if (filters.userId) {
+    if (filters.role === 'tutor') {
+      query.tutorId = filters.userId;
+    } else if (filters.role === 'student') {
+      query.studentId = filters.userId;
+    }
   }
 
+  if (filters.status) {
+    query.status = filters.status;
+  }
+
+  if (filters.startDate || filters.endDate) {
+    query.startDate = {};
+    if (filters.startDate) query.startDate.$gte = new Date(filters.startDate);
+    if (filters.endDate) query.startDate.$lte = new Date(filters.endDate);
+  }
+
+  const session = await Session.find(query).populate('tutorId', 'userId').populate('studentId', 'userId').populate('location.addressId').sort({ startDate: -1 });
+  return {
+    status: true,
+    message: 'Session fetched successfully',
+    data: session,
+  };
+};
+
+export const getSessionById = async (sessionId) => {
+  const session = await Session.findById(sessionId).populate('tutorId', 'userId').populate('studentId', 'userId').populate('location.addressId');
+  console.log(session);
+  return { status: true, message: 'Session fetched successfully', data: session };
+};
+
+export const getSessionByHireRequestId = async (hireRequestId) => {
+  const session = await Session.findOne({ hireRequestId }).populate('tutorId', 'userId').populate('studentId', 'userId').populate('location.addressId');
+  return { status: true, message: 'Session fetched successfully', data: session };
+};
+
+export const updateSessionStatus = async (sessionId, status, reason) => {
   const session = await Session.findById(sessionId);
-  const newEndDate = addMonths(session.endDate, extensionDuration);
+  if (!session) return { status: false, message: 'Session not found' };
 
-  //send notification to tutor and Admin regarding session extension -- to be implemented
+  session.status = status;
+  if (reason) session.cancellationReason = reason;
 
-  const updatedSession = await Session.findByIdAndUpdate(
-    sessionId,
-    {
-      $push: {
-        extensionRequest: {
-          status: 'PENDING_TUTOR_APPROVAL',
-          reason: 'Session extension',
-          requestedDate: new Date(),
-        },
-      },
-    },
-    { new: true }
-  );
+  await session.save();
+
+  // Notify relevant parties about status change
+  await notificationService.createNotification({
+    userId: session.tutorId,
+    title: 'Session Status Updated',
+    message: `Session status has been updated to ${status}`,
+    type: 'SESSION_STATUS_UPDATE',
+    relatedEntityId: session._id,
+    relatedEntityType: 'Session',
+  });
 
   return {
     status: true,
-    message: 'Session extended successfully',
-    data: updatedSession,
+    message: 'Session status updated successfully',
+    data: session,
   };
 };
 
-export const handleTutorResponseForExtension = async (sessionId, action) => {
+export const requestExtension = async (sessionId, extensionData) => {
   const session = await Session.findById(sessionId);
+  if (!session) return { status: false, message: 'Session not found' };
 
-  if (!session) {
-    return {
-      status: false,
-      message: 'Session not found',
-    };
-  }
+  session.extensionRequest.push({
+    ...extensionData,
+    status: 'PENDING_TUTOR_APPROVAL',
+    requestedDate: new Date(),
+  });
 
-  const currentRequest = session.extensionRequest[session.extensionRequest.length() - 1];
-  if (currentRequest.status !== 'PENDING_TUTOR_APPROVAL') {
-    return {
-      status: false,
-      message: 'No pending extension request found',
-    };
-  }
+  await session.save();
 
-  const newStatus = action === 'accept' ? 'PAYMENT_PENDING' : 'REJECTED';
-
-  const updatedSession = await Session.findOneAndUpdate(
-    {
-      _id: sessionId,
-      'extensionRequest.status': 'PENDING_TUTOR_APPROVAL',
-    },
-    {
-      $set: {
-        'extensionRequest.$.status': newStatus,
-        'extensionRequest.$.tutorResponseDate': new Date(),
-      },
-    },
-    { new: true }
-  );
-
-  // Notify student about tutor's response
+  // Notify tutor about extension request
+  await notificationService.createNotification({
+    userId: session.tutorId,
+    title: 'Session Extension Request',
+    message: 'A student has requested to extend the session',
+    type: 'EXTENSION_REQUEST',
+    relatedEntityId: session._id,
+    relatedEntityType: 'Session',
+  });
 
   return {
     status: true,
-    message: 'Extension Session accpeted by tutor',
-    data: updatedSession,
+    message: 'Extension request sent successfully',
+    data: session,
   };
 };
 
-export const handleAdminApprovalForExtension = async (sessionId, action) => {
+export const updateExtensionStatus = async (sessionId, requestId, status, reason) => {
   const session = await Session.findById(sessionId);
-  if (!session) {
-    return { status: false, message: 'Session not found' };
-  }
+  if (!session) return { status: false, message: 'Session not found' };
 
-  const currentRequest = session.extensionRequest[session.extensionRequest.length() - 1];
+  const extensionRequest = session.extensionRequest.id(requestId);
+  if (!extensionRequest) return { status: false, message: 'Extension request not found' };
 
-  if (currentRequest.status !== 'PENDING_ADMIN_APPROVAL') {
-    return {
-      status: false,
-      message: 'Extension Request is not in pending admin approval state',
-    };
-  }
+  extensionRequest.status = status;
+  if (reason) extensionRequest.reason = reason;
+  if (status === 'APPROVED') extensionRequest.approvedDate = new Date();
 
-  if (action === 'approve') {
-    const newEndDate = addMonths(session.endDate, currentRequest.extensionDuration);
+  await session.save();
 
-    const updatedSession = await Session.findOneAndUpdate(
-      {
-        _id: sessionId,
-        'extensionRequest.status': 'PENDING_ADMIN_APPROVAL',
-      },
-      {
-        $set: {
-          endDate: newEndDate,
-          'extensionRequest.$.status': 'APPROVED',
-          'extensionRequest.$.approvedDate': new Date(),
-        },
-      },
-      { new: true }
-    );
+  // Notify student about extension request status
+  await notificationService.createNotification({
+    userId: session.studentId,
+    title: 'Extension Request Update',
+    message: `Your extension request has been ${status}`,
+    type: 'EXTENSION_STATUS_UPDATE',
+    relatedEntityId: session._id,
+    relatedEntityType: 'Session',
+  });
 
-    // Notify both tutor and student about approval
-
-    return {
-      status: true,
-      message: 'Extension request approved by admin',
-      data: updatedSession,
-    };
-  } else {
-    // Handle rejection (might need to process refund)
-    const updatedSession = await Session.findOneAndUpdate(
-      {
-        _id: sessionId,
-        'extensionRequest.status': 'PENDING_ADMIN_APPROVAL',
-      },
-      {
-        $set: {
-          'extensionRequest.$.status': 'REJECTED',
-          'extensionRequest.$.approvedDate': new Date(),
-        },
-      },
-      { new: true }
-    );
-
-    // Notify both parties about rejection
-
-    return {
-      status: false,
-      message: 'Extension request rejected by Admin',
-      data: updatedSession,
-    };
-  }
+  return {
+    status: true,
+    message: 'Extension request status updated successfully',
+    data: session,
+  };
 };

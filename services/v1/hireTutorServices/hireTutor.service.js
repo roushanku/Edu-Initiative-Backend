@@ -39,7 +39,7 @@ export const getAllRequests = async ({ page = 1, limit = 10, status, modeOfStudy
 };
 
 export const getRequestById = async (id) => {
-  const request = await HireTutor.findById(id).populate('studentId', 'name email').populate('tutorId', 'name email').populate('subjectId', 'name').populate('addressID');
+  const request = await HireTutor.findById(id).populate('studentId', 'name email').populate('tutorId', 'name email').populate('subjectId', 'name').populate('addressId');
 
   if (!request) {
     return { status: false, message: 'Request not found' };

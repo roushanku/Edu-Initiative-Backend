@@ -6,3 +6,4 @@ export * as addressService from './v1/addressServices/address.service.js';
 export * as paymentService from './v1/paymentServices/payment.service.js';
 export * as notificationService from './v1/notificationServices/notification.service.js';
 export * as hireTutorService from './v1/hireTutorServices/hireTutor.service.js';
+export * as sessionService from './v1/sessionServices/session.service.js';

@@ -22,7 +22,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['BOOKING_REQUEST', 'TUTOR_REQUEST', 'BOOKING_CONFIRMED', 'BOOKING_CANCELLED', 'PAYMENT_RECEIVED', 'PAYMENT_CONFIRMED', 'REMINDER', 'SYSTEM'],
+      enum: ['SESSION_CREATED', 'SESSION_STATUS_UPDATE', 'EXTENSION_REQUEST', 'BOOKING_REQUEST', 'TUTOR_REQUEST', 'BOOKING_CONFIRMED', 'BOOKING_CANCELLED', 'PAYMENT_RECEIVED', 'PAYMENT_CONFIRMED', 'REMINDER', 'SYSTEM'],
       required: true,
     },
     relatedEntityId: {
@@ -31,7 +31,7 @@ const notificationSchema = new mongoose.Schema(
     },
     relatedEntityType: {
       type: String,
-      enum: ['Booking', 'Payment', 'User'],
+      enum: ['Booking', 'Payment', 'User', 'Session'],
       required: false,
     },
     readAt: {
