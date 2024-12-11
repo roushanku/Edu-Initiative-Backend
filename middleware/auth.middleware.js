@@ -1,6 +1,8 @@
-import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
-import {CustomError, errorResponse} from "../utils/responseHandler.js";
+import User from '../models/user.model.js';
+import jwt from 'jsonwebtoken';
+import { CustomError, errorResponse } from '../utils/responseHandler.js';
+import { JWT_SECRET } from '../scerets.js';
+
 export const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -8,7 +10,7 @@ export const authenticate = async (req, res, next) => {
       return errorResponse(res, 'Unauthorized', 401);
     }
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.id);
     if (!user) {
       return errorResponse(res, 'User no longer exists', 401);
@@ -21,7 +23,7 @@ export const authenticate = async (req, res, next) => {
     } else if (error.name === 'TokenExpiredError') {
       return errorResponse(res, 'Token expired', 401);
     } else {
-        return errorResponse(res, 'Unauthorized', 401);
+      return errorResponse(res, 'Unauthorized', 401);
     }
   }
 };

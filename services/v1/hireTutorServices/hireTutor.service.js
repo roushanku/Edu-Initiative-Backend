@@ -1,4 +1,5 @@
 import HireTutor from '../../../models/hireTutor.model.js';
+import { notificationService } from '../../../services/index.js';
 
 export const createRequest = async (requestData) => {
   // Validate time slots don't overlap with existing ones
@@ -7,6 +8,7 @@ export const createRequest = async (requestData) => {
     return validateTime;
   }
   const request = await HireTutor.create(requestData);
+
   return { status: true, message: 'Request created successfully', data: request };
 };
 
