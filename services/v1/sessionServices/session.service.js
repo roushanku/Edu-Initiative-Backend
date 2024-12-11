@@ -1,3 +1,4 @@
+import { request } from 'express';
 import Session from '../../../models/session.model.js';
 import { notificationService, hireTutorService } from '../../../services/index.js';
 
@@ -105,6 +106,24 @@ export const requestExtension = async (sessionId, extensionData) => {
   const session = await Session.findById(sessionId);
   if (!session) return { status: false, message: 'Session not found' };
 
+  if (session.status != 'ONGOING') {
+    return { status: false, message: 'You can request only onging session for extension' };
+  }
+
+  const allExtensionRequests = session.extensionRequest;
+  for (let i = 0; i < allExtensionRequests.length; i++) {
+    if (allExtensionRequests[i].status != 'APPROVED') {
+      return { status: false, message: 'Already made a request' };
+    }
+  }
+
+  if (session.endDate - new Date() < -100 * 24 * 60 * 60 * 1000) {
+    return {
+      status: false,
+      message: 'You can only request at least five days before the session ends.',
+    };
+  }
+
   session.extensionRequest.push({
     ...extensionData,
     status: 'PENDING_TUTOR_APPROVAL',
@@ -113,7 +132,6 @@ export const requestExtension = async (sessionId, extensionData) => {
 
   await session.save();
 
-  // Notify tutor about extension request
   await notificationService.createNotification({
     userId: session.tutorId,
     title: 'Session Extension Request',
@@ -148,7 +166,7 @@ export const updateExtensionStatus = async (sessionId, requestId, status, reason
     userId: session.studentId,
     title: 'Extension Request Update',
     message: `Your extension request has been ${status}`,
-    type: 'EXTENSION_STATUS_UPDATE',
+    type: 'EXTENSION_REQUEST_UPDATE',
     relatedEntityId: session._id,
     relatedEntityType: 'Session',
   });

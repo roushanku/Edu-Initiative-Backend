@@ -1,5 +1,5 @@
 import express from 'express';
-import * as notificationController from '../../../controllers/v1/notificationController/notification.controller.js';
+import { notificationController } from '../../../controllers/v1/index.js';
 import * as notificationValidator from '../../../validations/notification.validation.js';
 import validate from '../../../middleware/validate.js';
 import { authenticate } from '../../../middleware/auth.middleware.js';

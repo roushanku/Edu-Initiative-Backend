@@ -1,2 +1,11 @@
-export * as hireTutorController from './hireTutorController/hire.controller.js';
+export * as userController from './userController/user.controller.js';
+export * as authController from './authController/auth.controller.js';
+export * as tutorController from './tutorController/tutor.controller.js';
 export * as sessionController from './sessionController/session.controller.js';
+export * as addressController from './addressController/address.controller.js';
+export * as paymentController from './paymentController/payment.controller.js';
+export * as studentController from './studentController/student.controller.js';
+export * as subjectController from './subjectController/subject.controller.js';
+export * as hireTutorController from './hireTutorController/hire.controller.js';
+export * as tutorApplicationController from './tutorApplications/tutorApplication.controller.js';
+export * as notificationController from './notificationController/notification.controller.js';
