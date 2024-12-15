@@ -1,16 +1,24 @@
-import { userService } from "../../../services/index.js";
+import { userService } from '../../../services/index.js';
 export const registerUser = async (req, res) => {
   try {
-    const user = await userService.registerUser(req.body);
+    const userData = {
+      email: req.body.email,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      role: 'Student',
+      phoneNumber: req.body.phoneNumber,
+    };
+    const user = await userService.registerUser(userData);
     if (!user) {
       return res.json({
         status: false,
-        message: "User registration failed",
+        message: 'User registration failed',
       });
     }
     res.json({
       status: true,
-      message: "User registered successfully",
+      message: 'User registered successfully',
       data: user,
     });
   } catch (error) {
@@ -28,12 +36,12 @@ export const loginUser = async (req, res) => {
     if (!user) {
       return res.json({
         status: false,
-        message: "Login failed",
+        message: 'Login failed',
       });
     }
     res.json({
       status: true,
-      message: "Login successful",
+      message: 'Login successful',
       data: user,
     });
   } catch (error) {
@@ -50,12 +58,12 @@ export const getUserById = async (req, res) => {
     if (!user) {
       return res.json({
         status: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
     res.json({
       status: true,
-      message: "User retrieved successfully",
+      message: 'User retrieved successfully',
       data: user,
     });
   } catch (error) {
@@ -71,7 +79,7 @@ export const getAllUsers = async (req, res) => {
     const users = await userService.getAllUsers();
     res.json({
       status: true,
-      message: "Users retrieved successfully",
+      message: 'Users retrieved successfully',
       data: users,
     });
   } catch (error) {
@@ -88,12 +96,12 @@ export const updateUser = async (req, res) => {
     if (!updatedUser) {
       return res.json({
         status: false,
-        message: "User update failed",
+        message: 'User update failed',
       });
     }
     res.json({
       status: true,
-      message: "User updated successfully",
+      message: 'User updated successfully',
       data: updatedUser,
     });
   } catch (error) {
@@ -110,12 +118,12 @@ export const deleteUser = async (req, res) => {
     if (!userDeleted) {
       return res.json({
         status: false,
-        message: "User deletion failed",
+        message: 'User deletion failed',
       });
     }
     res.json({
       status: true,
-      message: "User deleted successfully",
+      message: 'User deleted successfully',
     });
   } catch (error) {
     res.json({
@@ -131,12 +139,12 @@ export const toggleUserIsActive = async (req, res) => {
     if (!updatedUser) {
       return res.json({
         status: false,
-        message: "Failed to update user status",
+        message: 'Failed to update user status',
       });
     }
     res.json({
       status: true,
-      message: "User status updated",
+      message: 'User status updated',
       data: updatedUser,
     });
   } catch (error) {
@@ -149,19 +157,16 @@ export const toggleUserIsActive = async (req, res) => {
 
 export const updateProfilePicture = async (req, res) => {
   try {
-    const updatedUser = await userService.updateProfilePicture(
-      req.params.id,
-      req.body.profilePicture
-    );
+    const updatedUser = await userService.updateProfilePicture(req.params.id, req.body.profilePicture);
     if (!updatedUser) {
       return res.json({
         status: false,
-        message: "Profile picture update failed",
+        message: 'Profile picture update failed',
       });
     }
     res.json({
       status: true,
-      message: "Profile picture updated",
+      message: 'Profile picture updated',
       data: updatedUser,
     });
   } catch (error) {

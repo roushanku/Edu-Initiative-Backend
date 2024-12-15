@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const { Schema } = mongoose;
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 // User Schema - Updated
 const userSchema = new mongoose.Schema({
@@ -9,11 +9,11 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   phoneNumber: String,
-  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }], // Reference to Address schema
+  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }], // Reference to Address schema
   profilePicture: String,
   role: {
     type: String,
-    enum: ["Student", "Tutor", "Admin", "User"],
+    enum: ['Student', 'Tutor', 'Admin'],
     required: true,
   },
   isActive: { type: Boolean, default: true },
@@ -32,6 +32,6 @@ userSchema.methods.generateAuthToken = function () {
 /**
  * @typedef User
  */
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;

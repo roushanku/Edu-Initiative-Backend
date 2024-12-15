@@ -1,42 +1,30 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import User from "../../../models/user.model.js";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import User from '../../../models/user.model.js';
 
 export const checkUser = async (userId) => {
   const user = await User.findById(userId);
-  return user
-    ? { status: true, user }
-    : { status: false, message: "User not found" };
+  return user ? { status: true, user } : { status: false, message: 'User not found' };
 };
 
-export const registerUser = async (data) => {
-  const { email, password, firstName, lastName, role } = data;
+export const registerUser = async (userData) => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({
-    email,
-    password: hashedPassword,
-    firstName,
-    lastName,
-    role,
-  });
-  return await user.save();
+  userData.password = hashedPassword;
+  const user = await User.create(userData);
+  return { status: true, message: 'User registered successfully', data: user };
 };
 
 export const loginUser = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new Error("Invalid email or password");
+    throw new Error('Invalid email or password');
   }
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
   return { user, token };
 };
 
 export const getUserById = async (id) => {
-  return await User.findById(id).populate("addresses");
+  return await User.findById(id).populate('addresses');
 };
 
 export const getAllUsers = async () => {
@@ -53,7 +41,7 @@ export const deleteUser = async (id) => {
 
 export const toggleUserStatus = async (id) => {
   const user = await User.findById(id);
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error('User not found');
   user.isActive = !user.isActive;
   return await user.save();
 };

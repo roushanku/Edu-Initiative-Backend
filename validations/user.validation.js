@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export const registerUser = {
   body: Joi.object().keys({
@@ -9,10 +9,7 @@ export const registerUser = {
     phoneNumber: Joi.string()
       .optional()
       .pattern(/^\d{10}$/), // Assuming phoneNumber should be a 10-digit number
-    addresses: Joi.array().items(Joi.string()).optional(), // Assuming addresses are string representations of ObjectId
     profilePicture: Joi.string().optional(),
-    role: Joi.string().valid("Student", "Tutor", "Admin", "User").required(),
-    isActive: Joi.boolean().optional().default(true),
   }),
 };
 

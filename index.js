@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import logger from './logger.js';
 import { PORT } from './scerets.js';
@@ -10,6 +11,15 @@ app.use((req, res, next) => {
   logger.info(`Request: ${req.method} ${req.url}`);
   next();
 });
+
+app.use(
+  cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
 
 app.use(express.json());
 app.use('/v1/api', rootRouter);

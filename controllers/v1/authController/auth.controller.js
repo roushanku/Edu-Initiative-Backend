@@ -1,38 +1,25 @@
-import User from '../../../models/user.model.js';
-import bcrypt from 'bcryptjs';
-import { errorResponse, successResponse } from '../../../utils/responseHandler.js';
-import { CustomError } from '../../../utils/responseHandler.js';
+import authServices from '../../../services/v1/authServices/auth.service.js';
 
-// Controller for user login
-export const loginUser = async (req, res, next) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      errorResponse(res, 'Invalid email or password', 401);
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-       errorResponse(res, 'Invalid email or password', 401);
-    }
-    const token = user.generateAuthToken();
-     successResponse(res, { token, user }, 'Login successful');
-
+  const response = await authServices.loginUser(email, password);
+  return res.json(response);
 };
 
-export const registerUser = async (req, res, next) => {
-  const { email, password, firstName, lastName, role } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      role,
-    });
-    await newUser.save();
-    return successResponse(res, null, 'User registered successfully', 201);
-  } catch (error) {
-    next(new CustomError('An error occurred during registration', 500));
-  }
+const registerUser = async (req, res, next) => {
+  const userData = {
+    email: req.body.email,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    role: 'Student',
+    phoneNumber: req.body.phoneNumber,
+  };
+  const response = await authServices.registerUser(userData);
+  return res.json(response);
+};
+
+export default {
+  loginUser,
+  registerUser,
 };
