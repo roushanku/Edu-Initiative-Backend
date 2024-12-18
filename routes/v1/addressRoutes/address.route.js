@@ -12,4 +12,3 @@ addressRouter.delete("/:id", validate(addressValidation.deleteAddress), addressC
 addressRouter.patch("/:id/default", validate(addressValidation.setDefaultAddress), addressController.setDefaultAddress);
 
 export default addressRouter;
-;
