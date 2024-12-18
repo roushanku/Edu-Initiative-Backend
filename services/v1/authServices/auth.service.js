@@ -18,7 +18,7 @@ const loginUser = async (email, password) => {
 };
 
 const registerUser = async (userData) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(userData.password, 10);
   userData.password = hashedPassword;
   const user = await User.create(userData);
   return { status: true, message: 'User registered successfully', data: user };

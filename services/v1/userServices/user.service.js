@@ -7,45 +7,46 @@ export const checkUser = async (userId) => {
   return user ? { status: true, user } : { status: false, message: 'User not found' };
 };
 
-export const registerUser = async (userData) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  userData.password = hashedPassword;
-  const user = await User.create(userData);
-  return { status: true, message: 'User registered successfully', data: user };
-};
-
-export const loginUser = async (email, password) => {
-  const user = await User.findOne({ email });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new Error('Invalid email or password');
-  }
-  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  return { user, token };
-};
-
 export const getUserById = async (id) => {
-  return await User.findById(id).populate('addresses');
+  const user = await User.findById(id).populate('addresses');
+  if (!user) {
+    return { status: false, message: 'User not found' };
+  }
+  return { status: true, message: 'User fetched successfully', data: user };
 };
 
 export const getAllUsers = async () => {
-  return await User.find();
+  const users = await User.find();
+  return { status: true, message: 'Users retrieved successfully', data: users };
 };
 
 export const updateUser = async (id, data) => {
-  return await User.findByIdAndUpdate(id, data, { new: true });
+  const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
+  if (!updatedUser) {
+    return { status: false, message: 'User update failed' };
+  }
+  return { status: true, message: 'User updated successfully', data: updatedUser };
 };
 
 export const deleteUser = async (id) => {
-  return await User.findByIdAndDelete(id);
+  const user = await User.findById(id);
+  if (!user) {
+    return { status: false, message: 'User not found' };
+  }
+  await User.findByIdAndDelete(id);
+  return { status: true, message: 'User deleted successfully' };
 };
 
 export const toggleUserStatus = async (id) => {
   const user = await User.findById(id);
-  if (!user) throw new Error('User not found');
-  user.isActive = !user.isActive;
-  return await user.save();
+  if (!user) {
+    return { status: false, message: 'User not found' };
+  }
+  const updated = await User.findByIdAndUpdate(id, { isActive: !user.isActive }, { new: true });
+  return { status: true, message: 'User status updated successfully', data: updated };
 };
 
 export const updateProfilePicture = async (id, profilePicture) => {
-  return await User.findByIdAndUpdate(id, { profilePicture }, { new: true });
+  const updated = await User.findByIdAndUpdate(id, { profilePicture }, { new: true });
+  return { status: true, message: 'Profile picture updated successfully', data: updated };
 };
