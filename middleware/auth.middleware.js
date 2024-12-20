@@ -16,7 +16,7 @@ export const authenticate = async (req, res, next) => {
     if (!user) {
       return { status: false, message: 'Unauthorized User' };
     }
-
+    console.log(user);
     req.user = user;
     next();
   } catch (error) {

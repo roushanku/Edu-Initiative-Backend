@@ -10,6 +10,13 @@ export const getAllUsers = async (req, res) => {
   res.json(users);
 };
 
+export const getMe = async (req, res) => {
+  const userId = req.user._id;
+  console.log(userId);
+  const users = await userService.getUserById(userId);
+  res.json(users);
+};
+
 export const updateUser = async (req, res) => {
   const response = await userService.updateUser(req.params.id, req.body);
   res.json(response);

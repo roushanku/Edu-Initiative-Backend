@@ -8,7 +8,7 @@ export const checkUser = async (userId) => {
 };
 
 export const getUserById = async (id) => {
-  const user = await User.findById(id).populate('addresses');
+  const user = await User.findById(id);
   if (!user) {
     return { status: false, message: 'User not found' };
   }
