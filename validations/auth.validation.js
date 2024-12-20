@@ -29,6 +29,11 @@ export const authValidation = {
       refreshToken: Joi.string().required(),
     }),
   },
+  verifyToken: {
+    body: Joi.object().keys({
+      token: Joi.string().required(),
+    }),
+  },
 };
 
 export const registerUser = {

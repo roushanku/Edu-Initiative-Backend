@@ -6,7 +6,7 @@ const loginUser = async (req, res) => {
   return res.json(response);
 };
 
-const registerUser = async (req, res, next) => {
+const registerUser = async (req, res) => {
   const userData = {
     email: req.body.email,
     password: req.body.password,
@@ -19,7 +19,15 @@ const registerUser = async (req, res, next) => {
   return res.json(response);
 };
 
+const verifyToken = async (req, res) => {
+  const { token } = req.body;
+  console.log(token);
+  const response = await authServices.verifyToken(token);
+  res.json(response);
+};
+
 export default {
   loginUser,
   registerUser,
+  verifyToken,
 };

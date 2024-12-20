@@ -11,10 +11,12 @@ export const authenticate = async (req, res, next) => {
     }
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.userId);
+
     if (!user) {
-      return errorResponse(res, 'User no longer exists', 401);
+      return { status: false, message: 'Unauthorized User' };
     }
+
     req.user = user;
     next();
   } catch (error) {

@@ -24,7 +24,17 @@ const registerUser = async (userData) => {
   return { status: true, message: 'User registered successfully', data: user };
 };
 
+const verifyToken = async (token) => {
+  const decoded = await jwt.verify(token, JWT_SECRET);
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return { status: false, message: 'Token Verification failed' };
+  }
+  return { status: true, message: 'Token verified' };
+};
+
 export default {
   loginUser,
   registerUser,
+  verifyToken,
 };

@@ -1,17 +1,28 @@
-import { addressService } from "../../../services/index.js";
+import { addressService } from '../../../services/index.js';
 
 export const addAddress = async (req, res) => {
   try {
-    const response = await addressService.createAddress(req.body);
+    const user = req.user;
+    const response = await addressService.createAddress(user, req.body);
     res.json(response);
   } catch (error) {
     res.json({ status: false, message: error.message });
   }
 };
 
-export const getAllAddresses = async (req, res) => {
+export const getAllAddresses = async (_, res) => {
   try {
     const response = await addressService.findAllAddresses();
+    res.json(response);
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
+
+export const getAddressByUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const response = await addressService.getAddressByUser(userId);
     res.json(response);
   } catch (error) {
     res.json({ status: false, message: error.message });
@@ -47,7 +58,8 @@ export const deleteAddress = async (req, res) => {
 
 export const setDefaultAddress = async (req, res) => {
   try {
-    const response = await addressService.markAsDefault(req.params.id);
+    const userId = req.user.id;
+    const response = await addressService.markAsDefault(req.params.id, userId);
     res.json(response);
   } catch (error) {
     res.json({ status: false, message: error.message });

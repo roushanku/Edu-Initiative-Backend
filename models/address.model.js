@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 
 // Address Schema
 const addressSchema = {
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
   type: { type: String, enum: ['Home', 'Work', 'Other'], default: 'Home' },
-  label: String, // Custom label for the address (e.g., "John's House", "Library")
+  label: String,
   town: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
@@ -13,7 +14,7 @@ const addressSchema = {
     type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: [Number], // [longitude, latitude]
   },
-  additionalInfo: String, // Landmarks, building name, floor, etc.
+  additionalInfo: String,
   isDefault: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: Date,
