@@ -1,7 +1,22 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
+const MediumEnum = Object.freeze({
+  ENGLISH: 'English',
+  HINDI: 'Hindi',
+  TAMIL: 'Tamil',
+  TELUGU: 'Telugu',
+  KANNADA: 'Kannada',
+  MALAYALAM: 'Malayalam',
+  GUJARATI: 'Gujarati',
+  MARATHI: 'Marathi',
+  BENGALI: 'Bengali',
+  PUNJABI: 'Punjabi',
+  URDU: 'Urdu',
+  SANSKRIT: 'Sanskrit',
+});
 
 const tutorSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   education: [
     {
       degree: String,
@@ -21,7 +36,7 @@ const tutorSchema = new mongoose.Schema({
   ],
   subjects: [
     {
-      subjectId: { type: mongoose.Schema.Types.ObjectId, ref: "Subject", required: true }, // Reference to Subject model
+      subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true }, // Reference to Subject model
       level: [String], // ['elementary', 'middle', 'high', 'college']
       hourlyRate: Number,
     },
@@ -30,7 +45,7 @@ const tutorSchema = new mongoose.Schema({
     {
       dayOfWeek: {
         type: String,
-        enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         required: true,
       },
       startTime: String, // "HH:mm" format
@@ -44,13 +59,13 @@ const tutorSchema = new mongoose.Schema({
   bio: String,
   teachingMethodology: {
     type: String,
-    enum: ["Online", "Offline"],
-    default: "Offline",
+    enum: ['Online', 'Offline'],
+    default: 'Offline',
     required: true,
   },
   medium: [String],
   isActive: { type: Boolean, default: true },
 });
 
-const Tutor = mongoose.model("Tutor", tutorSchema);
+const Tutor = mongoose.model('Tutor', tutorSchema);
 export default Tutor;

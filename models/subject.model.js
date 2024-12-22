@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-
+import mongoose from 'mongoose';
 
 const subjectSchema = new mongoose.Schema(
   {
@@ -15,6 +14,6 @@ const subjectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Subject = mongoose.model("Subject", subjectSchema);
+const Subject = mongoose.model('Subject', subjectSchema);
 
 export default Subject;

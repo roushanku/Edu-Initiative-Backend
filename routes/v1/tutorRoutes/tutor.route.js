@@ -11,7 +11,7 @@ tutorRouter.post( "/hire", validate(tutorValidator.hireTutor), tutorController.h
 // Tutor management routes
 tutorRouter.post( "/", validate(tutorValidator.createTutorProfile), tutorController.createTutorProfile);
 tutorRouter.get("/:id",validate(tutorValidator.getTutorById), tutorController.getTutorById);
-tutorRouter.get("/", tutorController.getAllTutors);
+tutorRouter.get("/", tutorController.getAllTutorsQuery);
 tutorRouter.put("/:id", tutorController.updateTutorProfile);
 tutorRouter.delete("/:id", validate(tutorValidator.deleteTutorProfile), tutorController.deleteTutorProfile);
 

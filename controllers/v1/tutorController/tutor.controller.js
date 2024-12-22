@@ -39,16 +39,108 @@ export const getTutorById = async (req, res) => {
   }
 };
 
+export const getAllTutorsQuery = async (req, res) => {
+  const { priceRange, rating, teachingMethodology, medium, subjects } = req.query;
+
+  let filters = {};
+  if (priceRange) {
+    let [min, max] = priceRange.split('-').map(Number);
+    filters.priceRange = { min, max };
+  }
+  if (rating) {
+    filters.rating = rating;
+  }
+
+  if(teachingMethodology){
+    filters.teachingMethodology = teachingMethodology;
+  }
+
+  if(medium){
+    filters.medium = medium;
+  }
+
+  if(subjects){
+    filters.subjects = subjects;
+  }
+
+  const response = await tutorService.getAllTutors(filters);
+  res.json(response);
+};
+
 export const getAllTutors = async (req, res) => {
+  console.log('from controller');
   try {
-    const tutors = await tutorService.getAllTutors();
+    const { priceRange, teachingMethodology, languages, rating, levels, page = 1, limit = 10, sortBy, sortOrder = 'desc' } = req.query;
+
+    // Validate inputs
+    if (rating && isNaN(Number(rating))) {
+      return res.status(400).json({
+        status: false,
+        message: 'Invalid rating value',
+      });
+    }
+
+    if (priceRange) {
+      // const [min, max] = priceRange.split('-').map(Number);
+      // filters.priceRange = { min, max };
+      try {
+        const [min, max] = priceRange.split('-').map(Number); // Declare once
+        console.log(min, max); // Debug logs
+
+        // if (isNaN(min) || isNaN(max)) {
+        //   return res.status(400).json({
+        //     status: false,
+        //     message: 'Invalid price range values',
+        //   });
+        // }
+
+        filters.priceRange = { min, max }; // Set filter if valid
+      } catch (error) {
+        return res.status(400).json({
+          status: false,
+          message: 'Invalid price range format',
+        });
+      }
+    } else {
+      filters.priceRange = null; // Default value
+    }
+
+    const filters = {
+      priceRange: priceRange ? JSON.parse(priceRange) : null,
+      teachingMethodology: teachingMethodology ? teachingMethodology.split(',') : [],
+      languages: languages ? languages.split(',') : [],
+      rating: rating ? Number(rating) : null,
+      levels: levels ? levels.split(',') : [],
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+      },
+      sort: {
+        field: sortBy,
+        order: sortOrder,
+      },
+    };
+
+    console.log('from controller 1');
+
+    const { tutors, total } = await tutorService.getAllTutors(filters);
+
+    console.log('from controller 2');
+
     res.json({
       status: true,
       message: 'Tutors retrieved successfully',
       data: tutors,
+      pagination: {
+        current: filters.pagination.page,
+        limit: filters.pagination.limit,
+        total,
+        pages: Math.ceil(total / filters.pagination.limit),
+      },
     });
   } catch (error) {
-    res.json({
+    console.error('Error fetching tutors:', error);
+    res.status(500).json({
       status: false,
       message: error.message,
     });
