@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   profilePicture: String,
   role: {
     type: String,
-    enum: ['Student', 'Tutor', 'Admin'],
+    enum: ['Student', 'Tutor', 'Admin', 'User'],
     required: true,
   },
   isActive: { type: Boolean, default: true },

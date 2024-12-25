@@ -10,7 +10,7 @@ export const authValidation = {
       phoneNumber: Joi.string()
         .optional()
         .pattern(/^\d{10}$/), // Assuming phoneNumber should be a 10-digit number
-      profilePicture: Joi.string().optional(),
+      role: Joi.string().valid('Student', 'User', 'Admin').required(),
     }),
   },
   login: {

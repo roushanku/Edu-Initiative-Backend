@@ -11,21 +11,21 @@ const checkTutor = async (tutorId) => {
   return tutor ? { status: true, tutor } : { status: false, message: 'Tutor not found' };
 };
 
-export const createTutorApplication = async (data) => {
+export const createTutorApplication = async (user, data) => {
   try {
-    const userId = data.userId;
-    const user = await User.findById(userId);
-    if (!user) {
-      return { status: false, message: 'User not found' };
-    }
+    const userId = user.id;
     if (user.role === 'Tutor') {
-      return { status: false, message: 'User is already a tutor' };
+      return { status: false, message: 'User is already a tutor.' };
     }
+
     const existingApplication = await TutorApplication.findOne({ userId });
     if (existingApplication) {
       return { status: false, message: 'Tutor application already exists for this user' };
     }
+
+    data.applicationStatus = 'PENDING';
     const tutorApplication = await TutorApplication.create(data);
+
     return { status: true, message: 'Tutor application created', data: tutorApplication };
   } catch (error) {
     logger.error(`Error creating tutor application: ${error.message}`);

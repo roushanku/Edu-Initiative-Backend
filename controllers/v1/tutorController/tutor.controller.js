@@ -6,7 +6,7 @@ export const getTutors = async (req, res) => {
 };
 
 export const createTutorApplication = async (req, res) => {
-  const response = await tutorService.createTutorApplication(req.body);
+  const response = await tutorService.createTutorApplication(req.user, req.body);
   res.json(response);
 };
 
@@ -51,15 +51,15 @@ export const getAllTutorsQuery = async (req, res) => {
     filters.rating = rating;
   }
 
-  if(teachingMethodology){
+  if (teachingMethodology) {
     filters.teachingMethodology = teachingMethodology;
   }
 
-  if(medium){
+  if (medium) {
     filters.medium = medium;
   }
 
-  if(subjects){
+  if (subjects) {
     filters.subjects = subjects;
   }
 

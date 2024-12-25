@@ -1,20 +1,15 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export const tutorApplication = {
   body: Joi.object().keys({
     userId: Joi.string().required(),
     aadharNumber: Joi.string()
-    .required()
-    .pattern(/^\d{12}$/),
+      .required()
+      .pattern(/^\d{12}$/),
     whatsappNumber: Joi.string()
       .required()
       .pattern(new RegExp(/^\d{10}$/)),
-    qualifications: Joi.array()
-      .items(
-        Joi.string().valid("10th", "12th", "B.Tech", "B.Ed", "M.TECH", "PHD")
-      )
-      .min(1)
-      .required(),
+    qualifications: Joi.array().items(Joi.string().valid('10th', '12th', 'B.Tech', 'B.Ed', 'M.TECH', 'PHD')).min(1).required(),
     experience: Joi.number().integer().min(0).required(),
     subjects: Joi.array()
       .items(
@@ -25,24 +20,11 @@ export const tutorApplication = {
       )
       .min(1)
       .required(),
-    expertise: Joi.array()
-      .items(Joi.string().valid("MATH", "SCIENCE", "ENGLISH", "SOCIAL_STUDIES"))
-      .min(1)
-      .required(),
+    expertise: Joi.array().items(Joi.string().valid('MATH', 'SCIENCE', 'ENGLISH', 'SOCIAL_STUDIES')).min(1).required(),
     timingPreferred: Joi.array()
       .items(
         Joi.object({
-          day: Joi.string()
-            .valid(
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY"
-            )
-            .required(),
+          day: Joi.string().valid('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY').required(),
           timings: Joi.array()
             .items(
               Joi.object({
@@ -56,14 +38,10 @@ export const tutorApplication = {
       )
       .min(1)
       .required(),
-    address: Joi.string().required(),
-    applicationStatus: Joi.string()
-      .valid("UNDERREVIEW", "PENDING", "APPROVED", "REJECTED")
-      .default("PENDING"),
+    addressId: Joi.string().required(),
     documents: Joi.array().items(Joi.string()).required(),
   }),
 };
-
 
 export const createTutorProfile = {
   body: Joi.object().keys({
@@ -94,7 +72,7 @@ export const createTutorProfile = {
     ),
     availability: Joi.array().items(
       Joi.object().keys({
-        dayOfWeek: Joi.string().valid("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday").required(),
+        dayOfWeek: Joi.string().valid('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday').required(),
         startTime: Joi.string().required(),
         endTime: Joi.string().required(),
       })
@@ -126,15 +104,15 @@ export const getTutorById = {
   params: Joi.object().keys({
     id: Joi.string().required(),
   }),
-}
+};
 
 export const deleteTutorProfile = {
   params: Joi.object().keys({
     id: Joi.string().required(),
   }),
-}
+};
 
-export const addSubject  ={
+export const addSubject = {
   params: Joi.object().keys({
     id: Joi.string().required(),
   }),
@@ -143,27 +121,27 @@ export const addSubject  ={
     level: Joi.array().items(Joi.string()).required(),
     hourlyRate: Joi.string().required(),
   }),
-}
+};
 
 export const addAvailability = {
   params: Joi.object().keys({
     id: Joi.string().required(),
   }),
   body: Joi.object().keys({
-    dayOfWeek: Joi.string().valid("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday").required(),
+    dayOfWeek: Joi.string().valid('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday').required(),
     startTime: Joi.string().required(),
     endTime: Joi.string().required(),
   }),
-}
+};
 
 export const updateVerificationStatus = {
   params: Joi.object().keys({
     id: Joi.string().required(),
   }),
   body: Joi.object().keys({
-    applicationStatus: Joi.string().valid("UNDERREVIEW", "PENDING", "APPROVED", "REJECTED").required(),
+    applicationStatus: Joi.string().valid('UNDERREVIEW', 'PENDING', 'APPROVED', 'REJECTED').required(),
   }),
-}
+};
 
 export const updateIsActive = {
   params: Joi.object().keys({
@@ -172,6 +150,4 @@ export const updateIsActive = {
   body: Joi.object().keys({
     isActive: Joi.boolean().required(),
   }),
-}
-
-
+};

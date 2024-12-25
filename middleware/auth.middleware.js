@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
-import { CustomError, errorResponse } from '../utils/responseHandler.js';
+import {  errorResponse } from '../utils/responseHandler.js';
 import { JWT_SECRET } from '../scerets.js';
 
 export const authenticate = async (req, res, next) => {

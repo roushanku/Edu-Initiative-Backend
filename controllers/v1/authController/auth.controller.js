@@ -12,7 +12,7 @@ const registerUser = async (req, res) => {
     password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    role: 'Student',
+    role: req.body.role,
     phoneNumber: req.body.phoneNumber,
   };
   const response = await authServices.registerUser(userData);
