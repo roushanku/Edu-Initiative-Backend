@@ -67,7 +67,6 @@ export const listSessions = async (filters) => {
 
 export const getSessionById = async (sessionId) => {
   const session = await Session.findById(sessionId).populate('tutorId', 'userId').populate('studentId', 'userId').populate('location.addressId');
-  console.log(session);
   return { status: true, message: 'Session fetched successfully', data: session };
 };
 

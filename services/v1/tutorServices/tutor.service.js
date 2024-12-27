@@ -134,13 +134,8 @@ export const getAllTutors = async (filters) => {
     }
 
     if (medium) {
-      console.log(medium);
       allTutor = allTutor.filter((tutor) => tutor.medium.includes(medium));
     }
-
-    // if (subjects) {
-    //   allTutor = allTutor.filter((tutor) => tutor.subjects.map((subject) => subjects.includes(subject.subjectId.toString())));
-    // }
 
     return { status: true, message: 'Tutors retrieved successfully', data: allTutor };
   } catch (error) {

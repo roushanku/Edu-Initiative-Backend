@@ -12,7 +12,6 @@ export const getAllUsers = async (req, res) => {
 
 export const getMe = async (req, res) => {
   const userId = req.user._id;
-  console.log(userId);
   const users = await userService.getUserById(userId);
   res.json(users);
 };

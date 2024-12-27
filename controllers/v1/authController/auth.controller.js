@@ -21,7 +21,6 @@ const registerUser = async (req, res) => {
 
 const verifyToken = async (req, res) => {
   const { token } = req.body;
-  console.log(token);
   const response = await authServices.verifyToken(token);
   res.json(response);
 };
