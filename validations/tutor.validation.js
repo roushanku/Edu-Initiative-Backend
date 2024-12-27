@@ -2,7 +2,6 @@ import Joi from 'joi';
 
 export const tutorApplication = {
   body: Joi.object().keys({
-    userId: Joi.string().required(),
     aadharNumber: Joi.string()
       .required()
       .pattern(/^\d{12}$/),

@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
-import {  errorResponse } from '../utils/responseHandler.js';
+import { errorResponse } from '../utils/responseHandler.js';
 import { JWT_SECRET } from '../scerets.js';
 
 export const authenticate = async (req, res, next) => {
@@ -16,7 +16,6 @@ export const authenticate = async (req, res, next) => {
     if (!user) {
       return { status: false, message: 'Unauthorized User' };
     }
-    console.log(user);
     req.user = user;
     next();
   } catch (error) {

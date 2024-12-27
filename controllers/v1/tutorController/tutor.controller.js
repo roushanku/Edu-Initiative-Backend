@@ -68,7 +68,6 @@ export const getAllTutorsQuery = async (req, res) => {
 };
 
 export const getAllTutors = async (req, res) => {
-  console.log('from controller');
   try {
     const { priceRange, teachingMethodology, languages, rating, levels, page = 1, limit = 10, sortBy, sortOrder = 'desc' } = req.query;
 
@@ -81,19 +80,8 @@ export const getAllTutors = async (req, res) => {
     }
 
     if (priceRange) {
-      // const [min, max] = priceRange.split('-').map(Number);
-      // filters.priceRange = { min, max };
       try {
         const [min, max] = priceRange.split('-').map(Number); // Declare once
-        console.log(min, max); // Debug logs
-
-        // if (isNaN(min) || isNaN(max)) {
-        //   return res.status(400).json({
-        //     status: false,
-        //     message: 'Invalid price range values',
-        //   });
-        // }
-
         filters.priceRange = { min, max }; // Set filter if valid
       } catch (error) {
         return res.status(400).json({
@@ -121,11 +109,7 @@ export const getAllTutors = async (req, res) => {
       },
     };
 
-    console.log('from controller 1');
-
     const { tutors, total } = await tutorService.getAllTutors(filters);
-
-    console.log('from controller 2');
 
     res.json({
       status: true,
