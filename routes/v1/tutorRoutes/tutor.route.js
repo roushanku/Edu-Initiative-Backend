@@ -2,7 +2,8 @@ import express from 'express';
 import validate from '../../../middleware/validate.js'; // Make sure this path is correct
 import * as tutorValidator from '../../../validations/tutor.validation.js';
 import * as tutorController from '../../../controllers/v1/tutorController/tutor.controller.js';
-
+import { authenticate } from '../../../middleware/auth.middleware.js';
+import { authorize } from '../../../middleware/auth.middleware.js';
 const tutorRouter = express.Router();
 
 tutorRouter.post('/application', authenticate, authorize(['User']), validate(tutorValidator.tutorApplication), tutorController.createTutorApplication);

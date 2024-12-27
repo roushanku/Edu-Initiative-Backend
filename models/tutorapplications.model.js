@@ -17,11 +17,6 @@ const tutorApplicationSchema = new mongoose.Schema(
         class: { type: String, required: true },
       },
     ],
-    expertise: {
-      type: [String],
-      enum: ['MATH', 'SCIENCE', 'ENGLISH', 'SOCIAL_STUDIES'],
-      required: true,
-    },
     timingPreferred: [
       {
         day: {

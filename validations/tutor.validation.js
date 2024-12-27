@@ -2,10 +2,9 @@ import Joi from 'joi';
 
 export const tutorApplication = {
   body: Joi.object().keys({
-    userId: Joi.string().required(),
     aadharNumber: Joi.string()
       .required()
-      .pattern(/^\d{12}$/),
+      .pattern(/^\d{4}$/),
     whatsappNumber: Joi.string()
       .required()
       .pattern(new RegExp(/^\d{10}$/)),
@@ -20,7 +19,7 @@ export const tutorApplication = {
       )
       .min(1)
       .required(),
-    expertise: Joi.array().items(Joi.string().valid('MATH', 'SCIENCE', 'ENGLISH', 'SOCIAL_STUDIES')).min(1).required(),
+    // subjects: Joi.array().items(Joi.string()),
     timingPreferred: Joi.array()
       .items(
         Joi.object({
@@ -39,7 +38,7 @@ export const tutorApplication = {
       .min(1)
       .required(),
     addressId: Joi.string().required(),
-    documents: Joi.array().items(Joi.string()).required(),
+    documents: Joi.array().items(Joi.string()),
   }),
 };
 

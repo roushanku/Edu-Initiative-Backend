@@ -15,6 +15,7 @@ export const findAllAddresses = async () => {
 
 export const getAddressByUser = async (userId) => {
   const address = await Address.find({ userId });
+  console.log(address);
   if (!address) {
     return { status: false, message: 'Address not found' };
   }
@@ -23,6 +24,7 @@ export const getAddressByUser = async (userId) => {
 
 export const findAddressById = async (id) => {
   const address = await Address.findById(id);
+  // console.log(address);
   if (!address) {
     return { status: false, message: 'Address not found' };
   }

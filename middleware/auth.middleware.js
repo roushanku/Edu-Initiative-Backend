@@ -36,11 +36,13 @@ export const authorize = (roles = []) => {
   }
   return (req, res, next) => {
     if (!req.user) {
-      return errorResponse(res, 'Please authenticate', 401);
+      // return errorResponse(res, 'Please authenticate', 401);
+      return res.json({ status: false, message: 'Please authenticate' });
     }
 
     if (roles.length && !roles.includes(req.user.role)) {
-      return errorResponse(res, 'You do not have permission to perform this action', 403);
+      // return errorResponse(res, 'You do not have permission to perform this action', 403);
+      return res.json({ status: false, message: 'You do not have permission to perform this action' });
     }
     next();
   };
