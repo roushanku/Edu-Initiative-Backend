@@ -6,8 +6,6 @@ export const getTutors = async (req, res) => {
 };
 
 export const createTutorApplication = async (req, res) => {
-  // console.log(req.body);
-  // res.json({status : true , message : "Tutor application created successfully"});
   const response = await tutorService.createTutorApplication(req.user, req.body);
   res.json(response);
 };

@@ -4,7 +4,7 @@ export const tutorApplication = {
   body: Joi.object().keys({
     aadharNumber: Joi.string()
       .required()
-      .pattern(/^\d{4}$/),
+      .pattern(/^\d{12}$/),
     whatsappNumber: Joi.string()
       .required()
       .pattern(new RegExp(/^\d{10}$/)),

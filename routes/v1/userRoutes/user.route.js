@@ -10,7 +10,7 @@ const userRouter = express.Router();
 
 userRouter.get('/:id', authenticate, authorize(['Student', 'Admin']), validate(userValidation.getUserById), userController.getUserById);
 userRouter.get('/', authenticate, authorize(['Admin']), userController.getAllUsers);
-userRouter.get('/me/user', authenticate, authorize(['Admin', 'Student']), userController.getMe);
+userRouter.get('/me/user', authenticate, authorize(['Admin', 'Student', 'User']), userController.getMe);
 userRouter.put('/:id', authenticate, authorize(['Student', 'Admin']), validate(userValidation.getUserById), userController.updateUser);
 userRouter.delete('/:id', authenticate, authorize(['Admin']), validate(userValidation.getUserById), userController.deleteUser);
 userRouter.patch('/:id/status', authenticate, authorize(['Admin']), validate(userValidation.toggleUserIsActive), userController.toggleUserIsActive); // Activate/deactivate user

@@ -23,10 +23,10 @@ export const createTutorApplication = async (user, data) => {
       return { status: false, message: 'Tutor application already exists for this user' };
     }
 
-    data.applicationStatus = 'PENDING';
-    const tutorApplication = await TutorApplication.create(data);
-
-    return { status: true, message: 'Tutor application created', data: tutorApplication };
+    // data.applicationStatus = 'PENDING';
+    // const tutorApplication = await TutorApplication.create(data);
+    return { status: true, message: 'Tutor application created' };
+    // return { status: true, message: 'Tutor application created', data: tutorApplication };
   } catch (error) {
     logger.error(`Error creating tutor application: ${error.message}`);
     return { status: false, message: 'Error creating tutor application' };
